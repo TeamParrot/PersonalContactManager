@@ -4,6 +4,6 @@ i.e. python3 and pip3
 
 The backend api relies on the dependencies in requirements.txt.
 
-They can be installed via: pip install --user -r requirements.txt
+They can be installed via: ```pip install --user -r requirements.txt```
 
-The backend server is started via: python main.py
+The backend server is started via: ```python main.py```
