@@ -3,6 +3,11 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import './App.css';
 import {HomePage} from "./pages/HomePage";
 import {LoginPage} from "./pages/LoginPage";
+import {IApiService} from "./services/IApiService";
+import {MockApiService} from "./services/MockApiService";
+import {LiveApiService} from "./services/LiveApiService";
+
+let _api: IApiService;
 
 class App extends Component {
     render() {
@@ -27,6 +32,10 @@ class App extends Component {
                 </div>
             </Router>
         );
+    }
+    
+    public static getApiInstance() {
+        return _api = _api || new LiveApiService();
     }
 }
 
