@@ -53,7 +53,8 @@ def get_contacts():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
         username = db.validate_login(token)
-        return json.dumps(db.get_contacts(username))
+        contacts = db.get_contacts(username)
+        return json.dumps(list(map(Contact.to_dict, contacts)))
     except UnauthorizedError:
         response.status = 401
 
