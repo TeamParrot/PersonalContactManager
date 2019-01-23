@@ -23,25 +23,55 @@ class Database:
         self.conn.close()
 
     def login(self, username, password):
+        """Authenticate the user and return a session token
+        
+        Raises:
+            UnauthorizedError: The credentials are incorrect.
+        """
         pass
 
     def logout(self, username):
+        """Removes the user from the session table"""
         pass
 
     def insert_user(self, username, password):
+        """Creates a new user entry and logs them in.
+
+        Returns:
+            A login token.
+        
+        Raises:
+            ConflictError: The username is taken.
+        """
         pass
 
-    def validate_login(self):
+    def validate_login(self, token):
+        """Checks if the given token is in the session table.
+
+        Raises:
+            UnauthorizedError: The token isn't logged in.
+        """
         pass
 
     def get_contacts(self, username):
+        """Returns a list of Contacts associated with the given username."""
         pass
 
     def insert_contact(self, username, contact):
+        """Creates a new contact and returns the contact_id."""
         pass
 
     def delete_contact(self, username, contact_id):
+        """Deletes a contact if it exists."""
         pass
 
     def update_contact(self, username, contact_id, contact):
+        """Equivalent to deleting the old contact and creating a new one.
+
+        Returns:
+            A contact_id associated with the new entry.
+        
+        Raises:
+            ContactExistsError: No entry with the given contact_id.
+        """
         pass

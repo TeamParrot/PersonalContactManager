@@ -21,8 +21,8 @@ def extract_credentials():
 def login():
     try:
         username, password = extract_credentials()
-        db.login(username, password)
-        response.set_cookie('username', username, secret=cfg.secret)
+        token = db.login(username, password)
+        response.set_cookie('token', token, secret=cfg.secret)
     except UnauthorizedError:
         response.status = 401
 
@@ -30,9 +30,10 @@ def login():
 @post('/api/logout')
 def logout():
     try:
-        username = db.validate_login()
+        token = request.get_cookie('token', secret=cfg.secret)
+        username = db.validate_login(token)
         db.logout(username)
-        response.delete_cookie('username')
+        response.delete_cookie('token')
     except UnauthorizedError:
         response.status = 401
 
@@ -41,8 +42,8 @@ def logout():
 def register():
     try:
         username, password = extract_credentials()
-        db.insert_user(username, password)
-        response.set_cookie('username', username, secret=cfg.secret)
+        token = db.insert_user(username, password)
+        response.set_cookie('token', token, secret=cfg.secret)
     except ConflictError:
         response.status = 409
 
@@ -50,8 +51,10 @@ def register():
 @get('/api/contacts')
 def get_contacts():
     try:
-        username = db.validate_login()
-        return json.dumps(db.get_contacts(username))
+        token = request.get_cookie('token', secret=cfg.secret)
+        username = db.validate_login(token)
+        contacts = db.get_contacts(username)
+        return json.dumps(list(map(Contact.to_dict, contacts)))
     except UnauthorizedError:
         response.status = 401
 
@@ -59,7 +62,8 @@ def get_contacts():
 @post('/api/contacts')
 def create_contact():
     try:
-        username = db.validate_login()
+        token = request.get_cookie('token', secret=cfg.secret)
+        username = db.validate_login(token)
         contact = Contact(request.json)
         contact_id = db.insert_contact(username, contact)
         return json.dumps({'id': contact_id})
@@ -70,7 +74,8 @@ def create_contact():
 @delete('/api/contacts/<contact_id>')
 def delete_contact(contact_id):
     try:
-        username = db.validate_login()
+        token = request.get_cookie('token', secret=cfg.secret)
+        username = db.validate_login(token)
         db.delete_contact(username, contact_id)
     except UnauthorizedError:
         response.status = 401
@@ -79,7 +84,8 @@ def delete_contact(contact_id):
 @put('/api/contacts/<contact_id>')
 def update_contact(contact_id):
     try:
-        username = db.validate_login()
+        token = request.get_cookie('token', secret=cfg.secret)
+        username = db.validate_login(token)
 
         contact_id = request.json['id']
         raw = request.json.copy()

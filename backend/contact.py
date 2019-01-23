@@ -18,9 +18,9 @@ class Contact:
             self.zip = raw['zip']
         except KeyError:
             raise MalformedContactError
-    
-    def sererialize(self):
-        table = {
+
+    def to_dict(self):
+        return {
             'firstName': self.firstname,
             'lastName': self.lastname,
             'phoneNumber': self.phonenumber,
@@ -30,4 +30,3 @@ class Contact:
             'state': self.state,
             'zip': self.zip
         }
-        return json.dumps(table)
