@@ -1,3 +1,6 @@
+import mysql.connector as connector
+
+
 class ConflictError(Exception):
     pass
 
@@ -11,6 +14,14 @@ class UnauthorizedError(Exception):
 
 
 class Database:
+    def __init__(self, cfg):
+        self.conn = connector.connect(
+            host=cfg.db_host, database=cfg.db_name,
+            user=cfg.db_user, password=cfg.db_passwd)
+
+    def close(self):
+        self.conn.close()
+
     def login(self, username, password):
         pass
 

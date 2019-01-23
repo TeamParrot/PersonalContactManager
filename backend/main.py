@@ -2,13 +2,13 @@ import json
 
 from bottle import delete, get, post, put, request, response, run
 
+from config import Config
 from contact import Contact, MalformedContactError
-
 from database import (ConflictError, ContactExistsError, Database,
                       UnauthorizedError)
 
-secret = 'super secret lol'
-db = Database()
+cfg = Config()
+db = Database(cfg)
 
 
 def extract_credentials():
@@ -22,7 +22,7 @@ def login():
     try:
         username, password = extract_credentials()
         db.login(username, password)
-        response.set_cookie('username', username, secret=secret)
+        response.set_cookie('username', username, secret=cfg.secret)
     except UnauthorizedError:
         response.status = 401
 
@@ -42,7 +42,7 @@ def register():
     try:
         username, password = extract_credentials()
         db.insert_user(username, password)
-        response.set_cookie('username', username, secret=secret)
+        response.set_cookie('username', username, secret=cfg.secret)
     except ConflictError:
         response.status = 409
 
@@ -93,4 +93,7 @@ def update_contact(contact_id):
         response.status = 404
 
 
-run()
+try:
+    run()
+finally:
+    db.close()
