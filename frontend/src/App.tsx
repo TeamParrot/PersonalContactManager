@@ -22,6 +22,18 @@ class App extends Component<AppProps, AppState> {
         this.state = {};
     }
 
+    componentDidMount(): void {
+        // Check if we are logged in.
+        const token = this.getCookieValue("token");
+        if (token) {
+            this.setState({
+                user: new User("Demo User")
+            });
+        } else {
+            console.log("Not logged in");
+        }
+    }
+
     render() {
         return (
             <Router>
@@ -43,6 +55,12 @@ class App extends Component<AppProps, AppState> {
                                 this.state.user &&
                                 <p>Logged in as {this.state.user.username}</p>
                             }
+                            {
+                                this.state.user &&
+                                <li>
+                                  <a onClick={this.logout}>Logout</a>
+                                </li>
+                            }
                         </ul>
                     </nav>
 
@@ -58,6 +76,18 @@ class App extends Component<AppProps, AppState> {
             user: user
         });
     };
+
+    private logout = () => {
+        this.setState({
+            user: null,
+        });
+    };
+
+    private getCookieValue(a) {
+        // https://stackoverflow.com/a/25490531/1218281
+        var b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+        return b ? b.pop() : '';
+    }
 
     public static getApiInstance() {
         return _api = _api || (USE_LIVE_API ? new LiveApiService() : new MockApiService());
