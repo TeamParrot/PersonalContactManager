@@ -26,8 +26,11 @@ class App extends Component<AppProps, AppState> {
         // Check if we are logged in.
         const token = this.getCookieValue("token");
         if (token) {
+            const user = new User("Demo User");
+            user.sessionToken = token;
+            
             this.setState({
-                user: new User("Demo User")
+                user: user,
             });
         } else {
             console.log("Not logged in");
