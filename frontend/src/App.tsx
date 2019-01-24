@@ -67,7 +67,7 @@ class App extends Component<AppProps, AppState> {
                         </ul>
                     </nav>
 
-                    <Route path="/" exact component={HomePage}/>
+                    <Route path="/" exact component={() => <HomePage user={this.state.user}/>}/>
                     <Route path="/login/" component={() => <LoginPage onLogin={this.userChanged}/>}/>
                 </div>
             </Router>
