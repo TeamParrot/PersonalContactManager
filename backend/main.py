@@ -100,6 +100,6 @@ def update_contact(contact_id):
 
 
 try:
-    run()
+    run(host=cfg.host, port=cfg.port)
 finally:
     db.close()
