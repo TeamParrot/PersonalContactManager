@@ -36,6 +36,11 @@ def login():
 def logout():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
+
+        if token is None:
+            response.status = 401
+            return json_error('Token cookie not set.')
+
         username = db.validate_login(token)
         db.logout(username)
         response.delete_cookie('token')
@@ -59,6 +64,11 @@ def register():
 def get_contacts():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
+        
+        if token is None:
+            response.status = 401
+            return json_error('Token cookie not set.')
+
         username = db.validate_login(token)
         contacts = db.get_contacts(username)
         return json.dumps(list(map(Contact.to_dict, contacts)))
@@ -71,6 +81,11 @@ def get_contacts():
 def create_contact():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
+
+        if token is None:
+            response.status = 401
+            return json_error('Token cookie not set.')
+
         username = db.validate_login(token)
         contact = Contact(request.json)
         contact_id = db.insert_contact(username, contact)
@@ -84,6 +99,11 @@ def create_contact():
 def delete_contact(contact_id):
     try:
         token = request.get_cookie('token', secret=cfg.secret)
+
+        if token is None:
+            response.status = 401
+            return json_error('Token cookie not set.')
+
         username = db.validate_login(token)
         db.delete_contact(username, contact_id)
     except UnauthorizedError:
@@ -95,6 +115,11 @@ def delete_contact(contact_id):
 def update_contact(contact_id):
     try:
         token = request.get_cookie('token', secret=cfg.secret)
+
+        if token is None:
+            response.status = 401
+            return json_error('Token cookie not set.')
+
         username = db.validate_login(token)
 
         contact_id = request.json['id']
