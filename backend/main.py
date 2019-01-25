@@ -12,9 +12,16 @@ db = Database(cfg)
 
 
 def extract_credentials():
-    username = request.json['username']
-    password = request.json['password']
+    raw = tolerant_request_json()
+    username = raw['username']
+    password = raw['password']
     return username, password
+
+
+def tolerant_request_json():
+    if request.json is not None:
+        return request.json
+    return json.load(request.body)
 
 
 def json_error(s):
@@ -87,7 +94,7 @@ def create_contact():
             return json_error('Token cookie not set.')
 
         username = db.validate_login(token)
-        contact = Contact(request.json['contact'])
+        contact = Contact(tolerant_request_json()['contact'])
         contact_id = db.insert_contact(username, contact)
         return json.dumps({'id': contact_id})
     except UnauthorizedError:
@@ -121,7 +128,7 @@ def update_contact(contact_id):
             return json_error('Token cookie not set.')
 
         username = db.validate_login(token)
-        contact = Contact(request.json['contact'])
+        contact = Contact(tolerant_request_json()['contact'])
         db.update_contact(username, contact_id, contact)
     except UnauthorizedError:
         response.status = 401
