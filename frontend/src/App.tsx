@@ -22,7 +22,7 @@ class App extends Component<AppProps, AppState> {
         this.state = {};
     }
 
-    componentDidMount(): void {
+    componentWillMount(): void {
         // Check if we are logged in.
         const token = this.getCookieValue("token");
         if (token) {

@@ -16,7 +16,22 @@ export class MockApiService implements IApiService {
     }
 
     public async getContacts(): Promise<Contact[]> {
-        return;
+        return [
+            {
+                "id": "1j4Fqp",
+                "firstName": "bob",
+                "lastName": "dole",
+                "phoneNumber": "4075559999",
+                "email": "dummy@fakemail.net",
+            },
+            {
+                "id": "2rjp1Pq",
+                "firstName": "jim",
+                "lastName": "henson",
+                "phoneNumber": "4075558888",
+                "email": "elmo@fakemail.net",
+            }
+        ]
     }
 
     public async logout(): Promise<void> {
