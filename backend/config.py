@@ -1,6 +1,6 @@
 import configparser
-import secrets
 import os.path
+import secrets
 import sys
 
 
