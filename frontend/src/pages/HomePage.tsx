@@ -49,7 +49,9 @@ export class HomePage extends Component<HomeProps, HomeState> {
                          onChange={this.searchChanged}/>
                   <div className="contact-list">
                       {
-                          this.filterContacts(this.state.contacts).map(c => <ContactItem key={c.id} contact={c}/>)
+                          this.filterContacts(this.state.contacts)
+                              .sort((a,b) => a.firstName.localeCompare(b.firstName))
+                              .map(c => <ContactItem key={c.id} contact={c}/>)
                       }
                   </div>
                 </div>
