@@ -1,5 +1,7 @@
-from collections import namedtuple
+import os.path
+import pickle
 import secrets
+
 import mysql.connector as connector
 
 
@@ -15,18 +17,29 @@ class UnauthorizedError(Exception):
     pass
 
 
-User = namedtuple('User', ['username', 'password', 'token', 'contacts'])
+class User:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.token = None
+        self.contacts = {}
+
 
 class Database:
     def __init__(self, cfg):
-        self.users = []
+        if os.path.exists('state.bin'):
+            with open('state.bin', 'rb') as f:
+                self.users = pickle.load(f)
+        else:
+            self.users = []
 
     def close(self):
-        pass
+        with open('state.bin', 'wb') as f:
+            pickle.dump(self.users, f)
 
     def login(self, username, password):
         """Authenticate the user and return a session token
-        
+
         Raises:
             UnauthorizedError: The credentials are incorrect.
         """
@@ -48,14 +61,14 @@ class Database:
 
         Returns:
             A login token.
-        
+
         Raises:
             ConflictError: The username is taken.
         """
         for user in self.users:
             if user.username == username:
                 raise ConflictError
-        self.users.append(User(username, password, None, {}))
+        self.users.append(User(username, password))
 
     def validate_login(self, token):
         """Checks if the given token is in the session table.
@@ -70,7 +83,6 @@ class Database:
             if user.token == token:
                 return user.username
         raise UnauthorizedError
-
 
     def get_contacts(self, username):
         """Returns a list of Contacts associated with the given username."""
@@ -101,7 +113,7 @@ class Database:
 
         Returns:
             A contact_id associated with the new entry.
-        
+
         Raises:
             ContactExistsError: No entry with the given contact_id.
         """
