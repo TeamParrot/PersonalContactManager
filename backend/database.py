@@ -24,7 +24,7 @@ class Database:
 
     def login(self, username, password):
         """Authenticate the user and return a session token
-        
+
         Raises:
             UnauthorizedError: The credentials are incorrect.
         """
@@ -39,7 +39,7 @@ class Database:
 
         Returns:
             A login token.
-        
+
         Raises:
             ConflictError: The username is taken.
         """
@@ -66,11 +66,8 @@ class Database:
         pass
 
     def update_contact(self, username, contact_id, contact):
-        """Equivalent to deleting the old contact and creating a new one.
+        """Replaces the contact corresponding to the contact_id.
 
-        Returns:
-            A contact_id associated with the new entry.
-        
         Raises:
             ContactExistsError: No entry with the given contact_id.
         """
