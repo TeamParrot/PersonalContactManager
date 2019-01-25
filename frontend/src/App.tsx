@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link, withRouter} from 'react-router-dom';
-import './App.scss';
 import {HomePage} from "./pages/HomePage";
 import {LoginPage} from "./pages/LoginPage";
 import {IApiService} from "./services/IApiService";
@@ -46,22 +45,24 @@ class App extends Component<AppProps, AppState> {
                     <nav>
                         <ul>
                             <li>
-                                <Link to="/">Home</Link>
+                                <Link to="/" className="button">Home</Link>
                             </li>
                             {
                                 !this.state.user &&
                                 <li>
-                                  <Link to="/login/">Login</Link>
+                                  <Link to="/login/" className="button">Login</Link>
+                                </li>
+                            }
+                            {
+                                !this.state.user &&
+                                <li>
+                                  <Link to="/register/" className="button">Register</Link>
                                 </li>
                             }
                             {
                                 this.state.user &&
-                                <p>Logged in as {this.state.user.username}</p>
-                            }
-                            {
-                                this.state.user &&
                                 <li>
-                                  <a onClick={this.logout}>Logout</a>
+                                  <a className="button" onClick={this.logout}>Logout</a>
                                 </li>
                             }
                         </ul>

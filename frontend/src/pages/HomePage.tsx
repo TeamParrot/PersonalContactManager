@@ -44,13 +44,13 @@ export class HomePage extends Component<HomeProps, HomeState> {
             {
                 this.state.user &&
                 <div>
-                  <h1>Home (Logged In)</h1>
+                  <h2>My Contacts ({this.state.contacts.length})</h2>
                   <input type="text" className="search-box" value={this.state.search} placeholder="Search..."
                          onChange={this.searchChanged}/>
                   <div className="contact-list">
                       {
                           this.filterContacts(this.state.contacts)
-                              .sort((a,b) => a.firstName.localeCompare(b.firstName))
+                              .sort((a, b) => a.firstName.localeCompare(b.firstName))
                               .map(c => <ContactItem key={c.id} contact={c}/>)
                       }
                   </div>
@@ -59,7 +59,8 @@ export class HomePage extends Component<HomeProps, HomeState> {
             {
                 !this.state.user &&
                 <div>
-                  <h1>Home (Logged Out)</h1>
+                  <h2>Welcome to Parrot Contact Manager</h2>
+                  <p>Create an account or login to manage your contacts.</p>
                 </div>
             }
         </div>
