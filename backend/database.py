@@ -63,7 +63,8 @@ class Database:
         Raises:
             UnauthorizedError: The token isn't logged in.
         """
-        assert token is not None
+        if token is None:
+            raise UnauthorizedError
 
         for user in self.users:
             if user.token == token:
