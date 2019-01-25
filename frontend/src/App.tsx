@@ -7,7 +7,7 @@ import {MockApiService} from "./services/MockApiService";
 import {LiveApiService} from "./services/LiveApiService";
 import {User} from "./models/User";
 
-const USE_LIVE_API: boolean = false;
+const USE_LIVE_API: boolean = true;
 
 type AppProps = {};
 type AppState = {
@@ -15,6 +15,8 @@ type AppState = {
 }
 
 class App extends Component<AppProps, AppState> {
+    private api: IApiService = App.getApiInstance();
+    
     constructor(props: AppProps) {
         super(props);
 
@@ -81,7 +83,8 @@ class App extends Component<AppProps, AppState> {
         });
     };
 
-    private logout = () => {
+    private logout = async () => {
+        await this.api.logout();
         this.setState({
             user: null,
         });

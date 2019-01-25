@@ -24,14 +24,13 @@ export class HomePage extends Component<HomeProps, HomeState> {
         this.state = {
             user: props.user,
             search: "",
-            contacts: [],
         };
     }
 
     async componentDidMount(): Promise<void> {
         if (this.state.user) {
+            // Load contacts from the API once the component is loaded if the user is logged in.
             const contacts = await this.api.getContacts();
-            console.log(contacts);
             this.setState({
                 ...this.state,
                 contacts: contacts,
@@ -44,16 +43,27 @@ export class HomePage extends Component<HomeProps, HomeState> {
             {
                 this.state.user &&
                 <div>
-                  <h2>My Contacts ({this.state.contacts.length})</h2>
-                  <input type="text" className="search-box" value={this.state.search} placeholder="Search..."
-                         onChange={this.searchChanged}/>
-                  <div className="contact-list">
-                      {
-                          this.filterContacts(this.state.contacts)
-                              .sort((a, b) => a.firstName.localeCompare(b.firstName))
-                              .map(c => <ContactItem key={c.id} contact={c}/>)
-                      }
-                  </div>
+                    {
+                        !this.state.contacts &&
+                        <div>
+                          <p>Loading contacts...</p>
+                        </div>
+                    }
+                    {
+                        this.state.contacts &&
+                        <div>
+                          <h2>My Contacts ({this.state.contacts.length})</h2>
+                          <input type="text" className="search-box" value={this.state.search} placeholder="Search..."
+                                 onChange={this.searchChanged}/>
+                          <div className="contact-list">
+                              {
+                                  this.filterContacts(this.state.contacts)
+                                      .sort((a, b) => a.firstName.localeCompare(b.firstName))
+                                      .map(c => <ContactItem key={c.id} contact={c}/>)
+                              }
+                          </div>
+                        </div>
+                    }
                 </div>
             }
             {
