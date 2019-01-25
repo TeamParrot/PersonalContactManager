@@ -54,7 +54,7 @@ class Database:
         pass
 
     def get_contacts(self, username):
-        """Returns a list of Contacts associated with the given username (contact.id set accordingly)."""
+        """Returns a list of Contacts associated with the given username (contact.contact_id set accordingly)."""
         pass
 
     def insert_contact(self, username, contact):
