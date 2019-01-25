@@ -113,10 +113,7 @@ class Database:
         raise ContactExistsError
 
     def update_contact(self, username, contact_id, contact):
-        """Equivalent to deleting the old contact and creating a new one.
-
-        Returns:
-            A contact_id associated with the new entry.
+        """Replaces the contact corresponding to the contact_id.
 
         Raises:
             ContactExistsError: No entry with the given contact_id.
