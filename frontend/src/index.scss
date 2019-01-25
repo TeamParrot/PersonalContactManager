@@ -64,6 +64,10 @@ nav {
 }
 
 /* Inputs */
+form {
+  max-width: 400px;
+}
+
 input, button {
   font-family: $font;
 }
@@ -75,6 +79,7 @@ input {
   box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
   transition: all .2s;
   width: 100%;
+  margin-bottom: 1em;
   
   font-weight: 600;
   font-size: 0.9rem;

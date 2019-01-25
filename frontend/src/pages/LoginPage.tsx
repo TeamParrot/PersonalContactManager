@@ -11,6 +11,7 @@ type LoginProps = {
 type LoginState = {
     user?: User;
     username: string;
+    password: string;
 };
 
 export class LoginPage extends Component<LoginProps, LoginState> {
@@ -21,6 +22,7 @@ export class LoginPage extends Component<LoginProps, LoginState> {
 
         this.state = {
             username: "",
+            password: "",
         };
     }
 
@@ -35,7 +37,9 @@ export class LoginPage extends Component<LoginProps, LoginState> {
 
                 <form onSubmit={this.handleSubmit}>
                     <input type="text" placeholder="Username" name="username" value={this.state.username}
-                           onChange={this.handleChange}/>
+                           onChange={this.handleChange} required/>
+                    <input type="text" placeholder="Password" name="password" value={this.state.password}
+                           onChange={this.handleChange} required/>
                     <button type="submit">Login</button>
                 </form>
             </div>
@@ -54,7 +58,7 @@ export class LoginPage extends Component<LoginProps, LoginState> {
     private handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
-        const user = await this.api.login(this.state.username, "password");
+        const user = await this.api.login(this.state.username, this.state.password);
         this.setState({
             ...this.state,
             user: user,
