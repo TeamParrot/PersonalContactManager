@@ -118,5 +118,9 @@ class Database:
         Raises:
             ContactExistsError: No entry with the given contact_id.
         """
-        self.delete_contact(username, contact_id)
-        self.insert_contact(username, contact)
+        for user in self.users:
+            if user.username == username:
+                if contact_id not in user.contacts:
+                    raise ContactExistsError
+                user.contacts[contact_id] = contact
+        raise RuntimeError('No username found in table')
