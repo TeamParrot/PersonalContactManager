@@ -17,6 +17,10 @@ def extract_credentials():
     return username, password
 
 
+def json_error(s):
+    return json.dumps({'error': s})
+
+
 @post('/api/login')
 def login():
     try:
@@ -25,6 +29,7 @@ def login():
         response.set_cookie('token', token, secret=cfg.secret)
     except UnauthorizedError:
         response.status = 401
+        return json_error('Invalid credentials.')
 
 
 @post('/api/logout')
@@ -36,6 +41,7 @@ def logout():
         response.delete_cookie('token')
     except UnauthorizedError:
         response.status = 401
+        return json_error('Invalid credentials.')
 
 
 @post('/api/register')
@@ -46,6 +52,7 @@ def register():
         response.set_cookie('token', token, secret=cfg.secret)
     except ConflictError:
         response.status = 409
+        return json_error('Username taken.')
 
 
 @get('/api/contacts')
@@ -57,6 +64,7 @@ def get_contacts():
         return json.dumps(list(map(Contact.to_dict, contacts)))
     except UnauthorizedError:
         response.status = 401
+        return json_error('Invalid credentials.')
 
 
 @post('/api/contacts')
@@ -69,6 +77,7 @@ def create_contact():
         return json.dumps({'id': contact_id})
     except UnauthorizedError:
         response.status = 401
+        return json_error('Invalid credentials.')
 
 
 @delete('/api/contacts/<contact_id>')
@@ -79,6 +88,7 @@ def delete_contact(contact_id):
         db.delete_contact(username, contact_id)
     except UnauthorizedError:
         response.status = 401
+        return json_error('Invalid credentials.')
 
 
 @put('/api/contacts/<contact_id>')
@@ -95,8 +105,10 @@ def update_contact(contact_id):
         db.update_contact(username, contact_id, contact)
     except UnauthorizedError:
         response.status = 401
+        return json_error('Invalid credentials.')
     except ContactExistsError:
         response.status = 404
+        return json_error('No contact exists with contactid: [{}]'.format(contact_id))
 
 
 try:
