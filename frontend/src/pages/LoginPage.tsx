@@ -12,6 +12,7 @@ type LoginState = {
     user?: User;
     username: string;
     password: string;
+    error?: string;
 };
 
 export class LoginPage extends Component<LoginProps, LoginState> {
@@ -34,11 +35,15 @@ export class LoginPage extends Component<LoginProps, LoginState> {
                 <Redirect push to="/"/>
                 }
                 <h1>Login Page</h1>
-
                 <form onSubmit={this.handleSubmit}>
+                    {this.state.error &&
+                    <div className="alert alert--error">
+                        {this.state.error}
+                    </div>
+                    }
                     <input type="text" placeholder="Username" name="username" value={this.state.username}
                            onChange={this.handleChange} required/>
-                    <input type="text" placeholder="Password" name="password" value={this.state.password}
+                    <input type="password" placeholder="Password" name="password" value={this.state.password}
                            onChange={this.handleChange} required/>
                     <button type="submit">Login</button>
                 </form>
@@ -58,11 +63,26 @@ export class LoginPage extends Component<LoginProps, LoginState> {
     private handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
-        const user = await this.api.login(this.state.username, this.state.password);
+        // Clear the error message.
         this.setState({
             ...this.state,
-            user: user,
+            error: "",
         });
-        this.props.onLogin(user);
+
+        try {
+            // Make an API call to log the user in.
+            const user = await this.api.login(this.state.username, this.state.password);
+            this.setState({
+                ...this.state,
+                user: user,
+            });
+            this.props.onLogin(user);
+        } catch (e) {
+            // Display an error message if we couldn't login (e.g. invalid password)
+            this.setState({
+                ...this.state,
+                error: e.message,
+            });
+        }
     }
 }

@@ -4,7 +4,8 @@ import {User} from "../models/User";
 
 export class MockApiService implements IApiService {
     public async login(username: string, password: string): Promise<User> {
-        return new User("Demo Account")
+        throw new Error("Invalid password!");
+        //return new User("Demo Account")
     }
     
     public async addContact(contact: Contact): Promise<void> {
@@ -38,7 +39,7 @@ export class MockApiService implements IApiService {
         return;
     }
 
-    public async register(): Promise<User> {
+    public async register(username: string, password: string): Promise<User> {
         return;
     }
 

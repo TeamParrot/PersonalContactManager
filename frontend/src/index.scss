@@ -75,7 +75,7 @@ input, button {
 input {
   border-radius: 5px;
   border: 2px solid #aaa;
-  padding: 0.5em 0.7em;
+  padding: 0.5em 0.75em;
   box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
   transition: all .2s;
   width: 100%;
@@ -121,4 +121,22 @@ button, .button {
 
 button + button {
   margin-left: 1em;
+}
+
+/* Alerts */
+.alert {
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 0.5em 0.75em;
+  line-height: 1.3em;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+  font-weight: 600;
+  margin-bottom: 1em;
+  
+  &.alert--error {
+    background-color: #f2dede;
+    border-color: #ebcccc;
+    color: #a94442;
+  }
 }

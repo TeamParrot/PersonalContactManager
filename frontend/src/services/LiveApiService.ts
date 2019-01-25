@@ -35,7 +35,7 @@ export class LiveApiService implements IApiService {
         return;
     }
 
-    public async register(): Promise<User> {
+    public async register(username: string, password: string): Promise<User> {
         return;
     }
 

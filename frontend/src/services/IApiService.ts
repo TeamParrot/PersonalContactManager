@@ -4,7 +4,7 @@ import {User} from "../models/User";
 export interface IApiService {
     login(username: string, password: string): Promise<User>
     logout(): Promise<void>
-    register(): Promise<User>
+    register(username: string, password: string): Promise<User>
     
     getContacts(): Promise<Contact[]>
     addContact(contact: Contact): Promise<void>
