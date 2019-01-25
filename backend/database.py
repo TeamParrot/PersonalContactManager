@@ -18,10 +18,10 @@ class UnauthorizedError(Exception):
 
 
 class User:
-    def __init__(self, username, password):
+    def __init__(self, username, password, token):
         self.username = username
         self.password = password
-        self.token = None
+        self.token = token
         self.contacts = {}
 
 
@@ -68,7 +68,9 @@ class Database:
         for user in self.users:
             if user.username == username:
                 raise ConflictError
-        self.users.append(User(username, password))
+        user = User(username, password, secrets.token_hex())
+        self.users.append(user)
+        return user.token
 
     def validate_login(self, token):
         """Checks if the given token is in the session table.
@@ -98,6 +100,7 @@ class Database:
                 key = secrets.token_hex()
                 user.contacts[key] = contact
                 return key
+        raise RuntimeError('User not in table: [{}]'.format(username))
 
     def delete_contact(self, username, contact_id):
         """Deletes a contact if it exists."""
@@ -106,6 +109,7 @@ class Database:
                 if contact_id in user.contacts:
                     del user.contacts[contact_id]
                     return
+                break
         raise ContactExistsError
 
     def update_contact(self, username, contact_id, contact):
