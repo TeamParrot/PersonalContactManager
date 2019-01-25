@@ -1,0 +1,44 @@
+/* CSS for the entire app can go here. This includes stuff like fonts and general purpose styling */
+/* Style for a specific component should go in <Component Name>.css */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+
+$font: 'Open Sans', sans-serif;
+
+body {
+  font-family: $font;
+  font-size: 16px;
+}
+
+/* Inputs */
+input, button {
+  font-family: $font;
+}
+
+/* Buttons */
+button {
+  background-image: url('assets/button.png');
+  background-size: cover;
+  border: 2px solid #000;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .1), inset 0 0 5px rgba(0, 0, 0, .1);
+  padding: 0.7em 0.9em;
+  min-width: 10em;
+  cursor: pointer;
+  transition: all .2s;
+  font-weight: 600;
+  font-size: 1rem;
+
+  &:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .3), inset 0 0 5px rgba(0, 0, 0, .1);
+    filter: brightness(105%);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    filter: brightness(80%);
+  }
+}
+
+button + button {
+  margin-left: 1em;
+}
