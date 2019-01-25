@@ -121,12 +121,7 @@ def update_contact(contact_id):
             return json_error('Token cookie not set.')
 
         username = db.validate_login(token)
-
-        contact_id = request.json['contact']['id']
-        raw = request.json['contact'].copy()
-        del raw['id']
-        contact = Contact(raw)
-
+        contact = Contact(request.json['contact'])
         db.update_contact(username, contact_id, contact)
     except UnauthorizedError:
         response.status = 401
