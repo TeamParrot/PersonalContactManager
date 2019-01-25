@@ -12,12 +12,19 @@ class Config:
                 parser.read_file(f)
 
             self.secret = parser['server']['secret']
+            self.host = parser['server']['host']
+            self.port = int(parser['server']['port'])
+
             self.db_host = parser['database']['host']
             self.db_name = parser['database']['name']
             self.db_user = parser['database']['user']
             self.db_passwd = parser['database']['passwd']
         else:
-            parser['server'] = {'secret': secrets.token_hex()}
+            parser['server'] = {
+                'secret': secrets.token_hex(),
+                'host': 'localhost',
+                'port': 8080
+            }
             parser['database'] = {
                 'host': 'hostname',
                 'name': 'databasename',
