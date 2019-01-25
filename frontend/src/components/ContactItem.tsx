@@ -33,6 +33,18 @@ export class ContactItem extends Component<ContactItemProps, ContactItemState> {
             <div className="contact__phone-number">
                 {this.state.contact.phoneNumber}
             </div>
+            <div className="contact__controls">
+                <button onClick={this.deleteContact}>Edit</button>
+                <button onClick={this.editContact}>Delete</button>
+            </div>
         </div>
     }
+    
+    private deleteContact = () => {
+
+    };
+
+    private editContact = () => {
+
+    };
 }
