@@ -88,7 +88,7 @@ class Database:
         raise UnauthorizedError
 
     def get_contacts(self, username):
-        """Returns a list of Contacts associated with the given username (contact.id set accordingly)."""
+        """Returns a list of Contacts associated with the given username (contact.contact_id set accordingly)."""
         for user in self.users:
             if user.username == username:
                 identified_contacts = []

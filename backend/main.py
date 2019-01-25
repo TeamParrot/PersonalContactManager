@@ -64,7 +64,7 @@ def register():
 def get_contacts():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
-        
+
         if token is None:
             response.status = 401
             return json_error('Token cookie not set.')
