@@ -87,7 +87,7 @@ def create_contact():
             return json_error('Token cookie not set.')
 
         username = db.validate_login(token)
-        contact = Contact(request.json)
+        contact = Contact(request.json['contact'])
         contact_id = db.insert_contact(username, contact)
         return json.dumps({'id': contact_id})
     except UnauthorizedError:
@@ -122,8 +122,8 @@ def update_contact(contact_id):
 
         username = db.validate_login(token)
 
-        contact_id = request.json['id']
-        raw = request.json.copy()
+        contact_id = request.json['contact']['id']
+        raw = request.json['contact'].copy()
         del raw['id']
         contact = Contact(raw)
 
