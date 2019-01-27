@@ -7,7 +7,7 @@ export interface IApiService {
     register(username: string, password: string): Promise<User>
     
     getContacts(): Promise<Contact[]>
-    addContact(contact: Contact): Promise<void>
-    updateContact(contact: Contact): Promise<void>
+    addContact(contact: Contact): Promise<Contact>
+    updateContact(contact: Contact): Promise<Contact>
     deleteContact(id: number): Promise<void>
 }

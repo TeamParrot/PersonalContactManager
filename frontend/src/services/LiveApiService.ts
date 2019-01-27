@@ -13,30 +13,42 @@ export class LiveApiService implements IApiService {
         };
         
         try {
-            const res = await axios.post(HOST + "/api/login", body);
-            return new User(res.data["username"]);
+            const res = await axios.post(`${HOST}/api/login`, body);
+            return new User(res.data.username);
         }
         catch (e) {
            throw new Error(e.response.data.error);
         }
     }
 
-    public async addContact(contact: Contact): Promise<void> {
-        return;
+    public async addContact(contact: Contact): Promise<Contact> {
+        try {
+            const res = await axios.post(`${HOST}/api/contacts`, contact);
+            contact.id = res.data.id;
+            return contact;
+        }
+        catch (e) {
+            throw new Error(e.response.data.error);
+        }
     }   
 
     public async deleteContact(id: number): Promise<void> {
-        return;
+        try {
+            await axios.delete(`${HOST}/api/contacts/${id}`);
+        }
+        catch (e) {
+            throw new Error(e.response.data.error);
+        }
     }
 
     public async getContacts(): Promise<Contact[]> {
-        const res = await axios.get(HOST + "/api/contacts");
+        const res = await axios.get(`${HOST}/api/contacts`);
         return res.data;
     }
 
     public async logout(): Promise<void> {
         try {
-            await axios.post(HOST + "/api/logout");
+            await axios.post(`${HOST}/api/logout`);
         }
         catch (e) {
             throw new Error(e.response.data.error);
@@ -44,10 +56,17 @@ export class LiveApiService implements IApiService {
     }
 
     public async register(username: string, password: string): Promise<User> {
+        // TODO
         return;
     }
 
-    public async updateContact(contact: Contact): Promise<void> {
-        return;
+    public async updateContact(contact: Contact): Promise<Contact> {
+        try {
+            await axios.put(`${HOST}/api/contacts/${contact.id}`, contact);
+            return contact;
+        }
+        catch (e) {
+            throw new Error(e.response.data.error);
+        }
     }
 }

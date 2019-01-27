@@ -4,6 +4,7 @@ import App from "../App";
 import {User} from "../models/User";
 import {Contact} from "../models/Contact";
 import {ContactItem} from "../components/ContactItem";
+import {ContactDialog, ContactDialogMode} from "../components/ContactDialog";
 
 type HomeProps = {
     user: User;
@@ -13,6 +14,7 @@ type HomeState = {
     user: User;
     search: string,
     contacts?: Contact[],
+    showContactDialog?: boolean,
 };
 
 export class HomePage extends Component<HomeProps, HomeState> {
@@ -53,15 +55,23 @@ export class HomePage extends Component<HomeProps, HomeState> {
                         this.state.contacts &&
                         <div>
                           <h2>My Contacts ({this.state.contacts.length})</h2>
-                          <input type="text" className="search-box" value={this.state.search} placeholder="Search..."
-                                 onChange={this.searchChanged}/>
+                          <div className="control-row">
+                            <button onClick={this.showAddDialog}>Add New</button>
+                            <input type="text" className="search-box" value={this.state.search} placeholder="Search..."
+                                   onChange={this.searchChanged}/>
+                          </div>
                           <div className="contact-list">
                               {
                                   this.filterContacts(this.state.contacts)
                                       .sort((a, b) => a.firstName.localeCompare(b.firstName))
-                                      .map(c => <ContactItem key={c.id} contact={c}/>)
+                                      .map(c => <ContactItem key={c.id} contact={c}
+                                                             onDelete={() => this.deleteContact(c)}/>)
                               }
                           </div>
+                          <ContactDialog showModal={this.state.showContactDialog} 
+                                         mode={ContactDialogMode.Add}
+                                         onCancel={this.contactDialogCancel}
+                                         onSubmit={this.contactDialogSubmit}/>
                         </div>
                     }
                 </div>
@@ -75,7 +85,37 @@ export class HomePage extends Component<HomeProps, HomeState> {
             }
         </div>
     }
+    
+    private showAddDialog = () => {
+        this.setState({
+            ...this.state,
+            showContactDialog: true,
+        });
+    };
+                
+    private contactDialogCancel = () => {
+        this.setState({
+            ...this.state,
+            showContactDialog: false,
+        });
+    };
 
+    private contactDialogSubmit = async (contact: Contact) => {
+        const newContact = await this.api.addContact(contact);
+        this.setState({
+            ...this.state,
+            contacts: [...this.state.contacts, newContact],
+            showContactDialog: false,
+        });
+    };
+    
+    private deleteContact(contact: Contact) {
+        this.setState({
+            ...this.state,
+            contacts: this.state.contacts.filter(c => c.id !== contact.id),
+        })
+    }
+    
     private searchChanged = (e: ChangeEvent<HTMLInputElement>) => {
         this.setState({
             ...this.state,

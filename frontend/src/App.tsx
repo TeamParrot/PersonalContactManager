@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Link, withRouter} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {HomePage} from "./pages/HomePage";
 import {LoginPage} from "./pages/LoginPage";
 import {IApiService} from "./services/IApiService";
@@ -41,7 +41,7 @@ class App extends Component<AppProps, AppState> {
     render() {
         return (
             <Router>
-                <div className="app">
+                <div className="app" id="app">
                     <h1>Contact Manager App</h1>
 
                     <nav>
