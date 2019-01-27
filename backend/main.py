@@ -162,6 +162,7 @@ def update_contact(contact_id):
 
 
 try:
+    logging.getLogger().setLevel(logging.DEBUG)
     run(host=cfg.host, port=cfg.port)
 finally:
     db.close()
