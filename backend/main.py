@@ -180,7 +180,7 @@ def update_contact(contact_id):
     try:
         token = request.get_cookie('token', secret=cfg.secret)
         logging.info(
-            'user attempting to create contact with token: {}'.format(token))
+            'user attempting to update contact with token: {}'.format(token))
 
         if token is None:
             response.status = 401
