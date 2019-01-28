@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {HomePage} from "./pages/HomePage";
 import {LoginPage} from "./pages/LoginPage";
+import {RegisterPage} from "./pages/RegisterPage";
 import {IApiService} from "./services/IApiService";
 import {MockApiService} from "./services/MockApiService";
 import {LiveApiService} from "./services/LiveApiService";
@@ -72,6 +73,7 @@ class App extends Component<AppProps, AppState> {
 
                     <Route path="/" exact component={() => <HomePage user={this.state.user}/>}/>
                     <Route path="/login/" component={() => <LoginPage onLogin={this.userChanged}/>}/>
+                    <Route path="/register/" component={() => <RegisterPage onLogin={this.userChanged}/>}/>
                 </div>
             </Router>
         );
