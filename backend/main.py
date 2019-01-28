@@ -1,7 +1,7 @@
 import json
 import logging
 
-from bottle import delete, get, post, put, request, response, run
+from bottle import delete, get, post, put, request, response, run, static_file
 
 from config import Config
 from contact import Contact, MalformedContactError
@@ -27,6 +27,11 @@ def tolerant_request_json():
 
 def json_error(s):
     return json.dumps({'error': s})
+
+
+@get('/<path:path>')
+def serve_root(path):
+    return static_file(path, root=cfg.root)
 
 
 @post('/api/login')
@@ -81,7 +86,8 @@ def register():
 def get_contacts():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
-        logging.info('user attempting to get contacts with token: {}'.format(token))
+        logging.info(
+            'user attempting to get contacts with token: {}'.format(token))
 
         if token is None:
             response.status = 401
@@ -89,7 +95,8 @@ def get_contacts():
 
         username = db.validate_login(token)
         contacts = db.get_contacts(username)
-        logging.info('returning {} contacts for {}'.format(len(contacts), username))
+        logging.info('returning {} contacts for {}'.format(
+            len(contacts), username))
         return json.dumps(list(map(Contact.to_dict, contacts)))
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
@@ -101,7 +108,8 @@ def get_contacts():
 def create_contact():
     try:
         token = request.get_cookie('token', secret=cfg.secret)
-        logging.info('user attempting to create contact with token: {}'.format(token))
+        logging.info(
+            'user attempting to create contact with token: {}'.format(token))
 
         if token is None:
             response.status = 401
@@ -110,7 +118,8 @@ def create_contact():
         username = db.validate_login(token)
         contact = Contact(tolerant_request_json()['contact'])
         contact_id = db.insert_contact(username, contact)
-        logging.info('created a new contact {} with an id of {}'.format(contact.firstname, contact_id))
+        logging.info('created a new contact {} with an id of {}'.format(
+            contact.firstname, contact_id))
         return json.dumps({'id': contact_id})
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
@@ -122,7 +131,8 @@ def create_contact():
 def delete_contact(contact_id):
     try:
         token = request.get_cookie('token', secret=cfg.secret)
-        logging.info('user attempting to delete contact with token: {}'.format(token))
+        logging.info(
+            'user attempting to delete contact with token: {}'.format(token))
 
         if token is None:
             response.status = 401
@@ -130,7 +140,8 @@ def delete_contact(contact_id):
 
         username = db.validate_login(token)
         db.delete_contact(username, contact_id)
-        logging.info('deleted a new contact for {} with an id of {}'.format(username, contact_id))
+        logging.info('deleted a new contact for {} with an id of {}'.format(
+            username, contact_id))
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
         response.status = 401
@@ -141,7 +152,8 @@ def delete_contact(contact_id):
 def update_contact(contact_id):
     try:
         token = request.get_cookie('token', secret=cfg.secret)
-        logging.info('user attempting to create contact with token: {}'.format(token))
+        logging.info(
+            'user attempting to create contact with token: {}'.format(token))
 
         if token is None:
             response.status = 401
@@ -150,7 +162,8 @@ def update_contact(contact_id):
         username = db.validate_login(token)
         contact = Contact(tolerant_request_json()['contact'])
         db.update_contact(username, contact_id, contact)
-        logging.info('user {} created a contact for {} with id {}'.format(username, contact.firstname, contact_id))
+        logging.info('user {} created a contact for {} with id {}'.format(
+            username, contact.firstname, contact_id))
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
         response.status = 401

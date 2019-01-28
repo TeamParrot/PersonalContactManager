@@ -15,6 +15,8 @@ class Config:
             self.host = parser['server']['host']
             self.port = int(parser['server']['port'])
 
+            self.root = parser['routing']['root']
+
             self.db_host = parser['database']['host']
             self.db_name = parser['database']['name']
             self.db_user = parser['database']['user']
@@ -24,6 +26,9 @@ class Config:
                 'secret': secrets.token_hex(),
                 'host': 'localhost',
                 'port': 8080
+            }
+            parser['routing'] = {
+                'root': 'roothtmldir'
             }
             parser['database'] = {
                 'host': 'hostname',
