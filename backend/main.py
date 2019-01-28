@@ -29,8 +29,12 @@ def json_error(s):
     return json.dumps({'error': s})
 
 
+@get('/')
+def serve_root():
+    return static_file('index.html', root=cfg.root)
+
 @get('/<path:path>')
-def serve_root(path):
+def serve_static(path):
     return static_file(path, root=cfg.root)
 
 
