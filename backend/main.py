@@ -120,7 +120,7 @@ def create_contact():
             return json_error('Token cookie not set.')
 
         username = db.validate_login(token)
-        contact = Contact(tolerant_request_json()['contact'])
+        contact = Contact(tolerant_request_json())
         contact_id = db.insert_contact(username, contact)
         logging.info('created a new contact {} with an id of {}'.format(
             contact.firstname, contact_id))
@@ -164,7 +164,7 @@ def update_contact(contact_id):
             return json_error('Token cookie not set.')
 
         username = db.validate_login(token)
-        contact = Contact(tolerant_request_json()['contact'])
+        contact = Contact(tolerant_request_json())
         db.update_contact(username, contact_id, contact)
         logging.info('user {} created a contact for {} with id {}'.format(
             username, contact.firstname, contact_id))
