@@ -129,4 +129,5 @@ class Database:
                 if contact_id not in user.contacts:
                     raise ContactExistsError
                 user.contacts[contact_id] = contact
+                return
         raise RuntimeError('No username found in table')
