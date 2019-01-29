@@ -4,21 +4,21 @@ import App from "../App";
 import {User} from "../models/User";
 import {Redirect} from "react-router";
 
-type LoginProps = {
-    onLogin: (user: User) => void;
+type RegisterProps = {
+    onRegister: (user: User) => void;
 };
 
-type LoginState = {
+type RegisterState = {
     user?: User;
     username: string;
     password: string;
     error?: string;
 };
 
-export class RegisterPage extends Component<LoginProps, LoginState> {
+export class RegisterPage extends Component<RegisterProps, RegisterState> {
     private api: IApiService = App.getApiInstance();
 
-    constructor(props: LoginProps) {
+    constructor(props: RegisterProps) {
         super(props);
 
         this.state = {
@@ -43,8 +43,11 @@ export class RegisterPage extends Component<LoginProps, LoginState> {
                     }
                     <input type="text" placeholder="Username" name="username" value={this.state.username}
                         onChange={this.handleChange} required/>
-                    <input type="password" placeholder="Password" name="password" value={this.state.password}
+                    <input type="password" placeholder="Password" name="password" value={this.state.password} id="password"
                         onChange={this.handleChange} required/>
+                    <input type="password" placeholder="Confirm Password" name="confirmPassword" id="confirmPassword"
+                        onChange={this.handlePasswordChange} required/>
+                    <div id="checkPassword"></div>
 
 
 
@@ -63,6 +66,23 @@ export class RegisterPage extends Component<LoginProps, LoginState> {
         });
     };
 
+    private handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+        // Update the state when an input element is changed.
+        // if (!event.target) return;
+        // this.setState({
+        //     ...this.state,
+        //     [event.target.name]: event.target.value
+        // });
+
+        // $('#confirmPassword').on('keyup', function () {
+        //     var password = $("#password").val();
+        //     var confirmPassword = $("#confirmPassword").val();
+        
+        //     if (password != confirmPassword) $("#checkPassword").html("Passwords do not match!");
+        //     else $("#checkPassword").html("Passwords match.");
+        // });
+    };
+
     private handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
@@ -74,12 +94,12 @@ export class RegisterPage extends Component<LoginProps, LoginState> {
 
         try {
             // Make an API call to log the user in.
-            const user = await this.api.login(this.state.username, this.state.password);
+            const user = await this.api.register(this.state.username, this.state.password);
             this.setState({
                 ...this.state,
                 user: user,
             });
-            this.props.onLogin(user);
+            this.props.onRegister(user);
         } catch (e) {
             // Display an error message if we couldn't login (e.g. invalid password)
             this.setState({
