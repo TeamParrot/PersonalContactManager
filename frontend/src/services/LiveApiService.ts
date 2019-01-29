@@ -56,8 +56,19 @@ export class LiveApiService implements IApiService {
     }
 
     public async register(username: string, password: string): Promise<User> {
-        // TODO
-        return;
+        const body  = {
+            username,
+            password
+        }
+
+        try {
+            const res = await axios.post(`${HOST}/api/register`, body);
+            return new User(res.data.username);
+        }
+        catch (e) {
+            throw new Error(e.response.data.error);
+        }
+        
     }
 
     public async updateContact(contact: Contact): Promise<Contact> {
