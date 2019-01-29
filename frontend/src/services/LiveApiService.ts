@@ -13,7 +13,7 @@ export class LiveApiService implements IApiService {
         };
         
         try {
-            const res = await axios.post(`${HOST}/api/login`, body);
+            const res = await axios.post(`${HOST}/api/login`, body, {withCredentials: true});
             return new User(res.data.username);
         }
         catch (e) {
