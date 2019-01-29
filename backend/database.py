@@ -45,7 +45,7 @@ class Database:
             UnauthorizedError: The credentials are incorrect.
         """
         for user in self.users:
-            if user.username == username and user.password:
+            if user.username == username and user.password == password:
                 user.token = secrets.token_hex()
                 return user.token
         raise UnauthorizedError
