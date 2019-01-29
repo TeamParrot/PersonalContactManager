@@ -3,7 +3,7 @@ import axios from 'axios';
 import {User} from "../models/User";
 import {Contact} from "../models/Contact";
 
-const HOST = "http://127.0.0.1:8080";
+const HOST = "";
 
 export class LiveApiService implements IApiService {
     public async login(username: string, password: string): Promise<User> {
