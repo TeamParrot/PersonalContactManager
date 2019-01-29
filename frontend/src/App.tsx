@@ -73,7 +73,7 @@ class App extends Component<AppProps, AppState> {
 
                     <Route path="/" exact component={() => <HomePage user={this.state.user}/>}/>
                     <Route path="/login/" component={() => <LoginPage onLogin={this.userChanged}/>}/>
-                    <Route path="/register/" component={() => <RegisterPage onLogin={this.userChanged}/>}/>
+                    <Route path="/register/" component={() => <RegisterPage onRegister={this.userChanged}/>}/>
                 </div>
             </Router>
         );
