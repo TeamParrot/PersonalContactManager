@@ -1,7 +1,7 @@
 import configparser
 import subprocess
 
-from bottle import post, request, run
+from bottle import get, post, request, run
 
 ROOT_PATH = '/home/bpglaser/PersonalContactManager/'
 FRONTEND_PATH = '/home/bpglaser/PersonalContactManager/frontend/'
@@ -27,6 +27,11 @@ def update_instance():
     subprocess.run(['npm', 'run', 'build'], check=True, cwd=FRONTEND_PATH)
     print('RUNNING')
     server_proc = subprocess.Popen(['python3', 'main.py'], cwd=BACKEND_PATH)
+
+
+@get('/')
+def root():
+    return subprocess.run(['git', 'log', '-n', '1'], check=True, stdout=subprocess.PIPE).stdout.decode()
 
 
 @post('/')
