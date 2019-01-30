@@ -11,6 +11,11 @@ BACKEND_PATH = '/home/bpglaser/PersonalContactManager/backend/'
 server_proc = None
 
 
+def start_server():
+    global server_proc
+    server_proc = subprocess.Popen(['python3', 'main.py'], cwd=BACKEND_PATH)
+
+
 def update_instance():
     global server_proc
 
@@ -26,7 +31,7 @@ def update_instance():
     print('BUILDING')
     subprocess.run(['npm', 'run', 'build'], check=True, cwd=FRONTEND_PATH)
     print('RUNNING')
-    server_proc = subprocess.Popen(['python3', 'main.py'], cwd=BACKEND_PATH)
+    start_server()
 
 
 @get('/')
@@ -43,4 +48,5 @@ def handle_webhook():
 cfg = configparser.ConfigParser()
 with open('config.ini') as f:
     cfg.read_file(f)
+start_server()
 run(host=cfg['server']['host'], port=cfg['server']['port'])
