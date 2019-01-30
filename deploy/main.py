@@ -22,10 +22,9 @@ def update_instance():
             server_proc.kill()
 
     print('PULLING')
-    subprocess.run(['git', 'pull'], check=True, cwd=ROOT_PATH, text=True)
+    subprocess.run(['git', 'pull'], check=True, cwd=ROOT_PATH)
     print('BUILDING')
-    subprocess.run(['npm', 'run', 'build'], check=True,
-                   cwd=FRONTEND_PATH, text=True)
+    subprocess.run(['npm', 'run', 'build'], check=True, cwd=FRONTEND_PATH)
     print('RUNNING')
     server_proc = subprocess.Popen(['python3', 'main.py'], cwd=BACKEND_PATH)
 
