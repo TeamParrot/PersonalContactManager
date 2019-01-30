@@ -3,6 +3,7 @@ import {IApiService} from "../services/IApiService";
 import App from "../App";
 import {User} from "../models/User";
 import {Redirect} from "react-router";
+import { FormErrors } from './FormErrors';
 
 type RegisterProps = {
     onRegister: (user: User) => void;
@@ -14,6 +15,12 @@ type RegisterState = {
     password: string;
     confirmpassword: string;
     error?: string;
+    formErrors;
+    usernameValid: boolean;
+    passwordValid: boolean;
+    confirmpasswordValid: boolean;
+    formValid: boolean;
+
 };
 
 export class RegisterPage extends Component<RegisterProps, RegisterState> {
@@ -25,7 +32,12 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
         this.state = {
             username: "",
             password: "",
-            confirmpassword: ""
+            confirmpassword: "",
+            formErrors: {email: '', password: '', confirmpassword: ''},
+            usernameValid: false,
+            passwordValid: false,
+            confirmpasswordValid: false,
+            formValid: false
 
         };
     }
@@ -38,6 +50,11 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                 <Redirect push to="/"/>
                 }
                 <h1>Register Page</h1>
+                <div className="panel panel-default">
+                
+                    <FormErrors formErrors={this.state.formErrors} />
+
+                </div>
                 <form onSubmit={this.handleSubmit}>
                     {this.state.error &&
                     <div className="alert alert--error">
@@ -54,7 +71,7 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
 
 
-                    <button type="submit">Register</button>
+                    <button type="submit" disabled={true} >Register</button>
                 </form>
             </div>
         )
@@ -62,22 +79,48 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
     private handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         // Update the state when an input element is changed.
-        if (!event.target) return;
-        this.setState({
-            ...this.state,
-            [event.target.name]: event.target.value
-        });
+        
+        const name = event.target.name;
+        const value = event.target.value;
+
+        this.setState( { ...this.state,[name]: value},
+            () => {this.validateField(name,value) });
     };
 
-    private handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { password, confirmpassword} = this.state;
+    validateField(fieldName, value) {
+        let feiledValidationErrors = this.state.formErrors;
+        let usernameValid = this.state.usernameValid;
+        let passwordValid = this.state.passwordValid;
+        let confirmpasswordValid = this.state.confirmpasswordValid;
 
-        if (password !== confirmpassword) {
-            alert("Paswords do not match");
-        } else {
-            //  make API
+        switch(fieldName) {
+            case 'username':
+                usernameValid = true;
+                feiledValidationErrors.username = usernameValid ? '': 'Username is invalid';
+                break;
+            case 'password':
+                passwordValid = value.length >=6;
+                feiledValidationErrors.password = passwordValid ? '': 'Password is to short';
+                break;
+            case 'confirmpassword':
+                confirmpasswordValid = (this.state.password == this.state.confirmpassword);
+                if( this.state.passwordValid == true)
+                    feiledValidationErrors.confirmpassword = confirmpasswordValid ? '': 'Passwords do not match';
+
+            default:
+                break;
         }
-    };
+        this.setState({formErrors: feiledValidationErrors,
+            usernameValid: usernameValid,
+            passwordValid: passwordValid
+        }, this.validateForm);
+
+    }
+
+    validateForm() {
+        this.setState({formValid: this.state.usernameValid && this.state.passwordValid});
+    }
+
 
     private handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -90,19 +133,12 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
         try {
             // Make an API call to log the user in.
-            const { password, confirmpassword} = this.state;
-
-            if (password !== confirmpassword) {
-                alert("Paswords do not match");
-            } else {
-                //  make API
-                const user = await this.api.register(this.state.username, this.state.password);
-                this.setState({
-                    ...this.state,
-                    user: user,
-                });
-                this.props.onRegister(user);
-            }
+            const user = await this.api.register(this.state.username, this.state.password);
+            this.setState({
+                ...this.state,
+                user: user,
+            });
+            this.props.onRegister(user);
 
         } catch (e) {
             // Display an error message if we couldn't login (e.g. invalid password)
