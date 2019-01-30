@@ -31,7 +31,7 @@ def update_instance():
 
 @post('/')
 def handle_webhook():
-    if request.json is not None and request.json['ref'] == 'refs/heads/prod':
+    if request.json is not None and 'ref' in request.json and request.json['ref'] == 'refs/heads/prod':
         update_instance()
 
 
