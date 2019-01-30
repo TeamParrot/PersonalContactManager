@@ -12,6 +12,7 @@ type RegisterState = {
     user?: User;
     username: string;
     password: string;
+    confirmpassword: string;
     error?: string;
 };
 
@@ -24,6 +25,8 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
         this.state = {
             username: "",
             password: "",
+            confirmpassword: ""
+
         };
     }
 
@@ -43,10 +46,10 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                     }
                     <input type="text" placeholder="Username" name="username" value={this.state.username}
                         onChange={this.handleChange} required/>
-                    <input type="password" placeholder="Password" name="password" value={this.state.password} id="password"
+                    <input type="password" placeholder="Password" name="password" value={this.state.password}
                         onChange={this.handleChange} required/>
-                    <input type="password" placeholder="Confirm Password" name="confirmPassword" id="confirmPassword"
-                        onChange={this.handlePasswordChange} required/>
+                    <input type="password" placeholder="Confirm Password" name="confirmpassword" value={this.state.confirmpassword} 
+                        onChange={this.handleChange} required/>
                     <div id="checkPassword"></div>
 
 
@@ -67,20 +70,13 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
     };
 
     private handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-        // Update the state when an input element is changed.
-        // if (!event.target) return;
-        // this.setState({
-        //     ...this.state,
-        //     [event.target.name]: event.target.value
-        // });
+        const { password, confirmpassword} = this.state;
 
-        // $('#confirmPassword').on('keyup', function () {
-        //     var password = $("#password").val();
-        //     var confirmPassword = $("#confirmPassword").val();
-        
-        //     if (password != confirmPassword) $("#checkPassword").html("Passwords do not match!");
-        //     else $("#checkPassword").html("Passwords match.");
-        // });
+        if (password !== confirmpassword) {
+            alert("Paswords do not match");
+        } else {
+            //  make API
+        }
     };
 
     private handleSubmit = async (event: FormEvent) => {
@@ -94,12 +90,20 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
         try {
             // Make an API call to log the user in.
-            const user = await this.api.register(this.state.username, this.state.password);
-            this.setState({
-                ...this.state,
-                user: user,
-            });
-            this.props.onRegister(user);
+            const { password, confirmpassword} = this.state;
+
+            if (password !== confirmpassword) {
+                alert("Paswords do not match");
+            } else {
+                //  make API
+                const user = await this.api.register(this.state.username, this.state.password);
+                this.setState({
+                    ...this.state,
+                    user: user,
+                });
+                this.props.onRegister(user);
+            }
+
         } catch (e) {
             // Display an error message if we couldn't login (e.g. invalid password)
             this.setState({
