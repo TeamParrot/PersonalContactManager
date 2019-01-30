@@ -12,6 +12,8 @@ server_proc = None
 
 
 def update_instance():
+    global server_proc
+
     if server_proc is not None:
         server_proc.terminate()
         try:
