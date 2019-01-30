@@ -1,3 +1,4 @@
+import configparser
 import subprocess
 
 from bottle import post, request, run
@@ -29,8 +30,11 @@ def update_instance():
 
 @post('/')
 def handle_webhook():
-    if request.json['ref'] == 'refs/heads/prod':
+    if request.json is not None and request.json['ref'] == 'refs/heads/prod':
         update_instance()
 
 
-run()
+cfg = configparser.ConfigParser()
+with open('config.ini') as f:
+    cfg.read_file(f)
+run(host=cfg['server']['host'], port=cfg['server']['port'])
