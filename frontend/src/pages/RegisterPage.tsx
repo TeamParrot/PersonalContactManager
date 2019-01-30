@@ -3,7 +3,7 @@ import {IApiService} from "../services/IApiService";
 import App from "../App";
 import {User} from "../models/User";
 import {Redirect} from "react-router";
-import { FormErrors } from './FormErrors';
+// import { FormErrors } from './FormErrors';
 
 type RegisterProps = {
     onRegister: (user: User) => void;
@@ -52,7 +52,7 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                 <h1>Register Page</h1>
                 <div className="panel panel-default">
                 
-                    <FormErrors formErrors={this.state.formErrors} />
+                    <this.FormErrors formErrors={this.state.formErrors} />
 
                 </div>
                 <form onSubmit={this.handleSubmit}>
@@ -61,8 +61,8 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                         {this.state.error}
                     </div>
                     }
-                    <input type="text" placeholder="Username" name="username" value={this.state.username}
-                        onChange={this.handleChange} required/>
+                    <input type="text" required placeholder="Username" name="username" value={this.state.username}
+                        onChange={this.handleChange} />
                     <input type="password" placeholder="Password" name="password" value={this.state.password}
                         onChange={this.handleChange} required/>
                     <input type="password" placeholder="Confirm Password" name="confirmpassword" value={this.state.confirmpassword} 
@@ -71,7 +71,7 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
 
 
-                    <button type="submit" disabled={true} >Register</button>
+                    <button type="submit" disabled={!this.state.formValid} >Register</button>
                 </form>
             </div>
         )
@@ -121,6 +121,29 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
         this.setState({formValid: this.state.usernameValid && this.state.passwordValid});
     }
 
+    FormErrors = ({formErrors}) =>
+
+    <div className='formErrors'>
+  
+      {Object.keys(formErrors).map((fieldName, i) => {
+  
+        if(formErrors[fieldName].length > 0){
+  
+          return (
+  
+            <p key={i}> {formErrors[fieldName]}</p>
+  
+          )        
+  
+        } else {
+  
+          return '';
+  
+        }
+  
+      })}
+  
+    </div>
 
     private handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
