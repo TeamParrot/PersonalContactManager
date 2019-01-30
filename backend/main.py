@@ -67,7 +67,7 @@ def login():
         username, password = extract_credentials()
         logging.info('{} attempting to login...'.format(username))
         token = db.login(username, password)
-        response.set_cookie('token', token, path='/')
+        response.set_cookie('token', token)
         logging.info('login success')
     except UnauthorizedError:
         logging.info('login failed. unauthorized')
@@ -101,7 +101,7 @@ def register():
         username, password = extract_credentials()
         logging.info('registering a new user: {}'.format(username))
         token = db.insert_user(username, password)
-        response.set_cookie('token', token, path='/')
+        response.set_cookie('token', token)
         logging.info('registration successful')
     except ConflictError:
         logging.info('registration failed. username taken')
