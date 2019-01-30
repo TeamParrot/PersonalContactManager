@@ -24,7 +24,7 @@ def update_instance():
     subprocess.run(['npm', 'run', 'build'], check=True,
                    cwd=FRONTEND_PATH, text=True)
     print('RUNNING')
-    server_proc = subprocess.Popen(['python', 'main.py'], cwd=BACKEND_PATH)
+    server_proc = subprocess.Popen(['python3', 'main.py'], cwd=BACKEND_PATH)
 
 
 @post('/')
