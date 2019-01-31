@@ -1,15 +1,41 @@
 import json
 import logging
 
-from bottle import delete, get, post, put, request, response, run, static_file
+from bottle import (delete, error, get, install, post, put, redirect, request,
+                    response, run, static_file)
 
 from config import Config
 from contact import Contact, MalformedContactError
 from database import (ConflictError, ContactExistsError, Database,
                       UnauthorizedError)
 
+COOKIE_MAX_AGE = 2592000
+
 cfg = Config()
 db = Database(cfg)
+
+
+# https://stackoverflow.com/questions/17262170/
+class EnableCors(object):
+    name = 'enable_cors'
+    api = 2
+
+    def apply(self, fn, context):
+        def _enable_cors(*args, **kwargs):
+            # set CORS headers
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+
+            if request.method != 'OPTIONS':
+                # actual request; reply with the actual response
+                return fn(*args, **kwargs)
+
+        return _enable_cors
+
+
+install(EnableCors())
 
 
 def extract_credentials():
@@ -33,9 +59,13 @@ def json_error(s):
 def serve_root():
     return static_file('index.html', root=cfg.root)
 
+
 @get('/<path:path>')
 def serve_static(path):
-    return static_file(path, root=cfg.root)
+    result = static_file(path, root=cfg.root)
+    if result.status_code == 404:
+        return redirect('/')
+    return result
 
 
 @post('/api/login')
@@ -44,7 +74,7 @@ def login():
         username, password = extract_credentials()
         logging.info('{} attempting to login...'.format(username))
         token = db.login(username, password)
-        response.set_cookie('token', token, secret=cfg.secret)
+        response.set_cookie('token', token, path='/', max_age=COOKIE_MAX_AGE)
         logging.info('login success')
     except UnauthorizedError:
         logging.info('login failed. unauthorized')
@@ -55,7 +85,7 @@ def login():
 @post('/api/logout')
 def logout():
     try:
-        token = request.get_cookie('token', secret=cfg.secret)
+        token = request.get_cookie('token')
         logging.info('user attempting to log in with token: {}'.format(token))
 
         if token is None:
@@ -78,7 +108,7 @@ def register():
         username, password = extract_credentials()
         logging.info('registering a new user: {}'.format(username))
         token = db.insert_user(username, password)
-        response.set_cookie('token', token, secret=cfg.secret)
+        response.set_cookie('token', token, path='/', max_age=COOKIE_MAX_AGE)
         logging.info('registration successful')
     except ConflictError:
         logging.info('registration failed. username taken')
@@ -89,7 +119,7 @@ def register():
 @get('/api/contacts')
 def get_contacts():
     try:
-        token = request.get_cookie('token', secret=cfg.secret)
+        token = request.get_cookie('token')
         logging.info(
             'user attempting to get contacts with token: {}'.format(token))
 
@@ -111,7 +141,7 @@ def get_contacts():
 @post('/api/contacts')
 def create_contact():
     try:
-        token = request.get_cookie('token', secret=cfg.secret)
+        token = request.get_cookie('token')
         logging.info(
             'user attempting to create contact with token: {}'.format(token))
 
@@ -134,7 +164,7 @@ def create_contact():
 @delete('/api/contacts/<contact_id>')
 def delete_contact(contact_id):
     try:
-        token = request.get_cookie('token', secret=cfg.secret)
+        token = request.get_cookie('token')
         logging.info(
             'user attempting to delete contact with token: {}'.format(token))
 
@@ -155,9 +185,9 @@ def delete_contact(contact_id):
 @put('/api/contacts/<contact_id>')
 def update_contact(contact_id):
     try:
-        token = request.get_cookie('token', secret=cfg.secret)
+        token = request.get_cookie('token')
         logging.info(
-            'user attempting to create contact with token: {}'.format(token))
+            'user attempting to update contact with token: {}'.format(token))
 
         if token is None:
             response.status = 401
