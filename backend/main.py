@@ -3,10 +3,13 @@ import logging
 
 from bottle import (delete, get, install, post, put, request, response, run,
                     static_file)
+
 from config import Config
 from contact import Contact, MalformedContactError
 from database import (ConflictError, ContactExistsError, Database,
                       UnauthorizedError)
+
+COOKIE_MAX_AGE = 2592000
 
 cfg = Config()
 db = Database(cfg)
@@ -68,7 +71,7 @@ def login():
         username, password = extract_credentials()
         logging.info('{} attempting to login...'.format(username))
         token = db.login(username, password)
-        response.set_cookie('token', token, path='/', max_age=2592000)
+        response.set_cookie('token', token, path='/', max_age=COOKIE_MAX_AGE)
         logging.info('login success')
     except UnauthorizedError:
         logging.info('login failed. unauthorized')
@@ -102,7 +105,7 @@ def register():
         username, password = extract_credentials()
         logging.info('registering a new user: {}'.format(username))
         token = db.insert_user(username, password)
-        response.set_cookie('token', token)
+        response.set_cookie('token', token, path='/', max_age=COOKIE_MAX_AGE)
         logging.info('registration successful')
     except ConflictError:
         logging.info('registration failed. username taken')
