@@ -62,7 +62,10 @@ def serve_root():
 
 @get('/<path:path>')
 def serve_static(path):
-    return static_file(path, root=cfg.root)
+    result = static_file(path, root=cfg.root)
+    if result.status_code() == 404:
+        return redirect('/')
+    return result
 
 
 @post('/api/login')
@@ -203,11 +206,6 @@ def update_contact(contact_id):
         logging.info('contact already exists')
         response.status = 404
         return json_error('No contact exists with contactid: [{}]'.format(contact_id))
-
-
-@error(404)
-def handle_404():
-    return redirect('/')
 
 
 try:
