@@ -1,0 +1,4 @@
+before_script:
+  - cd frontend
+
+script: npm run build
