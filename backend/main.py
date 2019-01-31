@@ -1,8 +1,8 @@
 import json
 import logging
 
-from bottle import (delete, get, install, post, put, request, response, run,
-                    static_file)
+from bottle import (delete, error, get, install, post, put, request, response, redirect, 
+                    run, static_file)
 
 from config import Config
 from contact import Contact, MalformedContactError
@@ -203,6 +203,11 @@ def update_contact(contact_id):
         logging.info('contact already exists')
         response.status = 404
         return json_error('No contact exists with contactid: [{}]'.format(contact_id))
+
+
+@error(404)
+def handle_404():
+    return redirect('/')
 
 
 try:
