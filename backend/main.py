@@ -1,8 +1,8 @@
 import json
 import logging
 
-from bottle import (delete, error, get, install, post, put, request, response, redirect, 
-                    run, static_file)
+from bottle import (delete, error, get, install, post, put, redirect, request,
+                    response, run, static_file)
 
 from config import Config
 from contact import Contact, MalformedContactError
