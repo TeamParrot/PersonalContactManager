@@ -138,8 +138,8 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
     validateForm() {
         this.setState({formValid: this.state.usernameValid 
-            && this.state.passwordInvalid 
-            && this.state.confirmpasswordInvalid});
+            && !this.state.passwordInvalid 
+            && !this.state.confirmpasswordInvalid});
     }
 
     private handleSubmit = async (event: FormEvent) => {
