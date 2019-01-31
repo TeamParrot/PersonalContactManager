@@ -15,13 +15,15 @@ type RegisterState = {
     password: string;
     confirmpassword: string;
     error?: string;
-    formErrors;
+    //formErrors;
     usernameValid: boolean;
-    passwordValid: boolean;
-    confirmpasswordValid: boolean;
+    passwordInvalid: boolean;
+    confirmpasswordInvalid: boolean;
     formValid: boolean;
 
 };
+
+
 
 export class RegisterPage extends Component<RegisterProps, RegisterState> {
     private api: IApiService = App.getApiInstance();
@@ -33,10 +35,10 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
             username: "",
             password: "",
             confirmpassword: "",
-            formErrors: {username: '', password: '', confirmpassword: ''},
+            //formErrors: {username: '', password: '', confirmpassword: ''},
             usernameValid: false,
-            passwordValid: false,
-            confirmpasswordValid: false,
+            passwordInvalid: false,
+            confirmpasswordInvalid: false,
             formValid: false
 
         };
@@ -44,39 +46,41 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
     public render() {
         // TODO: Finish login form. See controlled components here: https://reactjs.org/docs/forms.html
+        const { passwordInvalid, confirmpasswordInvalid } = this.state;
         return (
             <div>
                 {this.state.user &&
                 <Redirect push to="/"/>
                 }
                 <h1>Register Page</h1>
-                <div className="panel panel-default">
-                
-                    <this.test formErrors={this.state.formErrors} />
-
-                </div>
                 <form onSubmit={this.handleSubmit}>
                     {this.state.error &&
                     <div className="alert alert--error">
                         {this.state.error}
                     </div>
                     }
-                    <input type="text" required placeholder="Username" name="username" value={this.state.username}
-                        onChange={this.handleChange} />
+                    <input type="text"  placeholder="Username" name="username" value={this.state.username}
+                        onChange={this.handleChange} required/>
+
                     <input type="password" placeholder="Password" name="password" value={this.state.password}
                         onChange={this.handleChange} required/>
 
-                    <div className="panel panel-default">
-                
-                        <this.anothertest formErrors={this.state.formErrors} />
-
+                    <div className="Password Error">
+                        { passwordInvalid
+                            ? <div>Invalid Password</div>
+                            : null
+                        }
                     </div>
 
                     <input type="password" placeholder="Confirm Password" name="confirmpassword" value={this.state.confirmpassword} 
                         onChange={this.handleChange} required/>
-                    <div id="checkPassword"></div>
 
-
+                    <div className="Confirm Password Error">
+                        { confirmpasswordInvalid
+                            ? <div>Passwords do not match</div>
+                            : null
+                        }
+                    </div>
 
                     <button type="submit" disabled={!this.state.formValid} >Register</button>
                 </form>
@@ -95,86 +99,48 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
     };
 
     validateField(fieldName, value) {
-        let fieledValidationErrors = this.state.formErrors;
         let usernameValid = this.state.usernameValid;
-        let passwordValid = this.state.passwordValid;
-        let confirmpasswordValid = this.state.confirmpasswordValid;
+        let passwordInvalid = this.state.passwordInvalid;
+        let confirmpasswordInvalid = this.state.confirmpasswordInvalid;
 
         switch(fieldName) {
             case 'username':
                 usernameValid = true;
-                fieledValidationErrors.username = usernameValid ? '': 'Username is invalid';
+
                 break;
             case 'password':
-                passwordValid = value.length >=3;
-                fieledValidationErrors.password = passwordValid ? '': 'Password is to short';
+                if(value.length == 0 || value.length >= 6) {
+                    passwordInvalid = false;
+                } else {
+                    passwordInvalid = true;
+                }
+
                 break;
             case 'confirmpassword':
-                confirmpasswordValid = (this.state.password == this.state.confirmpassword);
-                if( this.state.passwordValid == true)
-                    fieledValidationErrors.confirmpassword = confirmpasswordValid ? '': 'Passwords do not match';
-
+                
+                if((value.length == 0 || (this.state.password == this.state.confirmpassword)) && !passwordInvalid) {
+                    confirmpasswordInvalid = false;
+                } else {
+                    confirmpasswordInvalid = true;
+                }
+                
+                break;
             default:
                 break;
         }
-        this.setState({formErrors: fieledValidationErrors,
+        this.setState( {
             usernameValid: usernameValid,
-            passwordValid: passwordValid
+            passwordInvalid: passwordInvalid,
+            confirmpasswordInvalid: confirmpasswordInvalid
         }, this.validateForm);
 
     }
 
     validateForm() {
-        this.setState({formValid: this.state.usernameValid && this.state.passwordValid});
+        this.setState({formValid: this.state.usernameValid 
+            && this.state.passwordInvalid 
+            && this.state.confirmpasswordInvalid});
     }
-
-    test = ({formErrors}) =>
-
-    <div className='formErrors'>
-  
-      {Object.keys(formErrors).map((fieldName, i) => {
-  
-        if(formErrors[fieldName].length > 0){
-  
-          return (
-  
-            <p key={i}> {formErrors[fieldName]}</p>
-  
-          )        
-  
-        } else {
-  
-          return '';
-  
-        }
-  
-      })}
-
-    </div>
-
-    anothertest = ({formErrors}) =>
-
-    <div className='formErrors'>
-
-    {Object.keys(formErrors).map((fieldName, i) => {
-
-        if(formErrors[fieldName].length > 0){
-
-        return (
-
-            <p key={i}> {formErrors[fieldName]}</p>
-
-        )        
-
-        } else {
-
-        return '';
-
-        }
-
-    })}
-  
-    </div>
 
     private handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
