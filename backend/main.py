@@ -63,7 +63,7 @@ def serve_root():
 @get('/<path:path>')
 def serve_static(path):
     result = static_file(path, root=cfg.root)
-    if result.status_code() == 404:
+    if result.status_code == 404:
         return redirect('/')
     return result
 
