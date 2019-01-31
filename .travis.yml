@@ -1,5 +1,0 @@
-before_script:
-  - cd frontend
-  - npm install
-
-script: npm run build
