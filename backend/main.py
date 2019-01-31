@@ -68,7 +68,7 @@ def login():
         username, password = extract_credentials()
         logging.info('{} attempting to login...'.format(username))
         token = db.login(username, password)
-        response.set_cookie('token', token, path='/', maxage=2592000)
+        response.set_cookie('token', token, path='/', max_age=2592000)
         logging.info('login success')
     except UnauthorizedError:
         logging.info('login failed. unauthorized')
