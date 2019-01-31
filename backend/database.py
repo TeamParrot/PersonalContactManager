@@ -36,6 +36,7 @@ class Database:
 
     def close(self):
         with open('state.bin', 'wb') as f:
+            print('saving memdb')
             pickle.dump(self.users, f)
 
     def login(self, username, password):
