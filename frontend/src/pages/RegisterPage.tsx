@@ -118,7 +118,7 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                 break;
             case 'confirmpassword':
                 
-                if((value.length == 0 || (this.state.password == this.state.confirmpassword)) && !passwordInvalid) {
+                if( value.length == 0 || (this.state.password == this.state.confirmpassword)  || passwordInvalid) {
                     confirmpasswordInvalid = false;
                 } else {
                     confirmpasswordInvalid = true;
