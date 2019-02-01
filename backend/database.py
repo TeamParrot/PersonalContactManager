@@ -3,6 +3,8 @@ import secrets
 import bcrypt
 import sqlalchemy
 
+from contact import Contact
+
 
 class ConflictError(Exception):
     pass
@@ -110,11 +112,19 @@ class Database:
         user = self.conn.execute(selectUser).first()
         userID = user['ID']
         selectContacts = sqlalchemy.select([contacts]).where(contacts.c.userID == userID)
-        contacts = self.conn.execute(selectContacts)
-        for contact in contacts:
-            '''TODO:'''
-            '''@Brad fill in with creating contacts'''
-        return []
+        contactsResult = self.conn.execute(selectContacts)
+
+        contacts = []
+        for row in contactsResult:
+            raw = {
+                'firstName': row[1],
+                'lastName': row[2],
+                'phoneNumber': row[3],
+                'email': row[4],
+            }
+            contacts.append(Contact(raw, contact_id=row[0]))
+
+        return contacts
 
 
     def insert_contact(self, username, contact):
