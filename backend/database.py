@@ -1,8 +1,7 @@
-
 import secrets
-import sqlalchemy
-import bcrypt
 
+import bcrypt
+import sqlalchemy
 
 
 class ConflictError(Exception):
@@ -21,7 +20,7 @@ class Database:
 
     def __init__(self, cfg):
         '''@sydney will work on putting the variables for the config in but for now it works'''
-        self.engine = create_engine('mysql://root:cop4331@35.237.160.233/small_project')
+        self.engine = sqlalchemy.create_engine('mysql+pymysql://root:cop4331@35.237.160.233/small_project')
         self.conn = self.engine.connect()
         self.meta = sqlalchemy.MetaData(self.engine, reflect=True)
 
@@ -37,15 +36,20 @@ class Database:
         """
         users = self.meta.tables['Users']
         login = self.meta.tables['Login']
+
         selectUser = sqlalchemy.select([users]).where(users.c.username == username)
         checkUser = self.conn.execute(selectUser).first()
+
+        if checkUser is None:
+            raise UnauthorizedError
+
         checkPassword = checkUser['password']
         insertID = checkUser['ID']
         if bcrypt.checkpw(password.encode('utf-8'), checkPassword.encode('utf-8')):
             tokenVal = secrets.token_hex(8)
             insertToken = login.insert().values(userID=insertID, token=tokenVal)
             self.conn.execute(insertToken)
-            return insertToken
+            return tokenVal
         else:
             raise UnauthorizedError
 
@@ -105,11 +109,12 @@ class Database:
         selectUser = sqlalchemy.select([users]).where(users.c.username == username)
         user = self.conn.execute(selectUser).first()
         userID = user['ID']
-        selectContacts = sqlalchemy.select(['Contacts']).where(contacts.c.userID == userID)
+        selectContacts = sqlalchemy.select([contacts]).where(contacts.c.userID == userID)
         contacts = self.conn.execute(selectContacts)
         for contact in contacts:
             '''TODO:'''
             '''@Brad fill in with creating contacts'''
+        return []
 
 
     def insert_contact(self, username, contact):
