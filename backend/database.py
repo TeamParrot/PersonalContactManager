@@ -19,13 +19,11 @@ class UnauthorizedError(Exception):
 
 
 class Database:
-
     def __init__(self, cfg):
         '''@sydney will work on putting the variables for the config in but for now it works'''
         self.engine = sqlalchemy.create_engine('mysql+pymysql://root:cop4331@35.237.160.233/small_project')
         self.conn = self.engine.connect()
         self.meta = sqlalchemy.MetaData(self.engine, reflect=True)
-
 
     def close(self):
         self.conn.close()

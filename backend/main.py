@@ -1,12 +1,15 @@
 import json
 import logging
 
-from bottle import (delete, get, install, post, put, request, response, run,
-                    static_file)
+from bottle import (delete, error, get, install, post, put, redirect, request,
+                    response, run, static_file)
+
 from config import Config
 from contact import Contact, MalformedContactError
 from database import (ConflictError, ContactExistsError, Database,
                       UnauthorizedError)
+
+COOKIE_MAX_AGE = 2592000
 
 cfg = Config()
 db = Database(cfg)
@@ -21,8 +24,9 @@ class EnableCors(object):
         def _enable_cors(*args, **kwargs):
             # set CORS headers
             response.headers['Access-Control-Allow-Origin'] = '*'
-            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
             response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
 
             if request.method != 'OPTIONS':
                 # actual request; reply with the actual response
@@ -58,7 +62,10 @@ def serve_root():
 
 @get('/<path:path>')
 def serve_static(path):
-    return static_file(path, root=cfg.root)
+    result = static_file(path, root=cfg.root)
+    if result.status_code == 404:
+        return redirect('/')
+    return result
 
 
 @post('/api/login')
@@ -67,7 +74,7 @@ def login():
         username, password = extract_credentials()
         logging.info('{} attempting to login...'.format(username))
         token = db.login(username, password)
-        response.set_cookie('token', token, path='/')
+        response.set_cookie('token', token, path='/', max_age=COOKIE_MAX_AGE)
         logging.info('login success')
     except UnauthorizedError:
         logging.info('login failed. unauthorized')
@@ -101,7 +108,7 @@ def register():
         username, password = extract_credentials()
         logging.info('registering a new user: {}'.format(username))
         token = db.insert_user(username, password)
-        response.set_cookie('token', token, path='/')
+        response.set_cookie('token', token, path='/', max_age=COOKIE_MAX_AGE)
         logging.info('registration successful')
     except ConflictError:
         logging.info('registration failed. username taken')
