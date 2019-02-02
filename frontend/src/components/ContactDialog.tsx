@@ -114,7 +114,7 @@ export class ContactDialog extends Component<ContactDialogProps, ContactDialogSt
 
         switch(fieldName) {
             case 'firstname':
-                if( value.match(/[a-zA-Z]{3, }/) ) {
+                if( value.match(/[a-Z]{3, }/) ) {
                     firstnameValid = true;
                 } else {
                     firstnameValid = false;
@@ -122,7 +122,7 @@ export class ContactDialog extends Component<ContactDialogProps, ContactDialogSt
 
                 break;
             case 'lastname':
-                if(value.match(/[a-zA-Z]{3, }/) ) {
+                if(value.match(/[a-Z]{3, }/) ) {
                     lastnameValid = true;
                 } else {
                     lastnameValid = false;
@@ -131,7 +131,7 @@ export class ContactDialog extends Component<ContactDialogProps, ContactDialogSt
                 break;
             case 'phonenmber':
                 
-                if( value.match(/[0-9]{10}$/i) ) {
+                if( value.match(/[0-9]{10}/) ) {
                     phonenumberValid = true;
                 } else {
                     phonenumberValid = false;
