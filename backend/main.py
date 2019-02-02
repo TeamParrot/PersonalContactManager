@@ -79,6 +79,7 @@ def login():
     except UnauthorizedError:
         logging.info('login failed. unauthorized')
         response.status = 401
+        response.delete_cookie('token')
         return json_error('Invalid credentials.')
 
 
@@ -99,6 +100,7 @@ def logout():
     except UnauthorizedError:
         logging.info('logout failed')
         response.status = 401
+        response.delete_cookie('token')
         return json_error('Invalid credentials.')
 
 
@@ -113,6 +115,7 @@ def register():
     except ConflictError:
         logging.info('registration failed. username taken')
         response.status = 409
+        response.delete_cookie('token')
         return json_error('Username taken.')
 
 
@@ -135,6 +138,7 @@ def get_contacts():
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
         response.status = 401
+        response.delete_cookie('token')
         return json_error('Invalid credentials.')
 
 
@@ -158,6 +162,7 @@ def create_contact():
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
         response.status = 401
+        response.delete_cookie('token')
         return json_error('Invalid credentials.')
 
 
@@ -179,6 +184,7 @@ def delete_contact(contact_id):
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
         response.status = 401
+        response.delete_cookie('token')
         return json_error('Invalid credentials.')
 
 
@@ -201,6 +207,7 @@ def update_contact(contact_id):
     except UnauthorizedError:
         logging.info('unauthorized contacts request')
         response.status = 401
+        response.delete_cookie('token')
         return json_error('Invalid credentials.')
     except ContactExistsError:
         logging.info('contact already exists')
