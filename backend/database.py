@@ -1,6 +1,6 @@
 import secrets
 
-import bcrypt
+from passlib.hash import sha512_crypt as sha
 import sqlalchemy
 
 from contact import Contact
@@ -45,8 +45,8 @@ class Database:
 
         checkPassword = checkUser['password']
         insertID = checkUser['ID']
-        if bcrypt.checkpw(password.encode('utf-8'), checkPassword.encode('utf-8')):
-            tokenVal = secrets.token_hex(8)
+        if sha.verify(password, checkPassword):
+            tokenVal = secrets.token_hex()
             insertToken = login.insert().values(userID=insertID, token=tokenVal)
             self.conn.execute(insertToken)
             return tokenVal
@@ -71,7 +71,7 @@ class Database:
         if result is not None:
             raise ConflictError
         else:
-            hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(12))
+            hashed_pw = sha.hash(password)
             insertUser = users.insert().values(username=username, password=hashed_pw)
             self.conn.execute(insertUser)
             getID = self.conn.execute(sqlalchemy.select([users]).where(users.c.username == username)).first()
