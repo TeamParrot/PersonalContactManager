@@ -24,7 +24,6 @@ type RegisterState = {
 };
 
 
-
 export class RegisterPage extends Component<RegisterProps, RegisterState> {
     private api: IApiService = App.getApiInstance();
 
@@ -46,7 +45,7 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
     public render() {
         // TODO: Finish login form. See controlled components here: https://reactjs.org/docs/forms.html
-        const { passwordInvalid, confirmpasswordInvalid } = this.state;
+        const {passwordInvalid, confirmpasswordInvalid} = this.state;
         return (
             <div>
                 {this.state.user &&
@@ -59,30 +58,28 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                         {this.state.error}
                     </div>
                     }
-                    <input type="text"  placeholder="Username" name="username" value={this.state.username}
-                        onChange={this.handleChange} required/>
+                    <input type="text" placeholder="Username" name="username" value={this.state.username}
+                           onChange={this.handleChange} required/>
 
                     <input type="password" placeholder="Password" name="password" value={this.state.password}
-                        onChange={this.handleChange} required/>
-
-                    <div className="Password Error">
-                        { passwordInvalid
-                            ? <div>Invalid Password</div>
-                            : null
-                        }
+                           onChange={this.handleChange} required/>
+                    {passwordInvalid &&
+                    <div className="form-error">
+                      <div>Invalid Password</div>
                     </div>
+                    }
 
-                    <input type="password" placeholder="Confirm Password" name="confirmpassword" value={this.state.confirmpassword} 
-                        onChange={this.handleChange} required/>
+                    <input type="password" placeholder="Confirm Password" name="confirmpassword"
+                           value={this.state.confirmpassword}
+                           onChange={this.handleChange} required/>
 
-                    <div className="Confirm Password Error">
-                        { confirmpasswordInvalid
-                            ? <div>Passwords do not match</div>
-                            : null
-                        }
+                    {confirmpasswordInvalid &&
+                    <div className="form-error">
+                      <div>Passwords do not match</div>
                     </div>
+                    }
 
-                    <button type="submit" disabled={!this.state.formValid} >Register</button>
+                    <button type="submit" disabled={!this.state.formValid}>Register</button>
                 </form>
             </div>
         )
@@ -90,12 +87,14 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
     private handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         // Update the state when an input element is changed.
-        
+
         const name = event.target.name;
         const value = event.target.value;
 
-        this.setState( { ...this.state,[name]: value},
-            () => {this.validateField(name,value) });
+        this.setState({...this.state, [name]: value},
+            () => {
+                this.validateField(name, value)
+            });
     };
 
     validateField(fieldName, value) {
@@ -103,13 +102,13 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
         let passwordInvalid = this.state.passwordInvalid;
         let confirmpasswordInvalid = this.state.confirmpasswordInvalid;
 
-        switch(fieldName) {
+        switch (fieldName) {
             case 'username':
                 usernameValid = true;
 
                 break;
             case 'password':
-                if(value.length == 0 || value.length >= 6) {
+                if (value.length == 0 || value.length >= 6) {
                     passwordInvalid = false;
                 } else {
                     passwordInvalid = true;
@@ -117,18 +116,19 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
 
                 break;
             case 'confirmpassword':
-                
-                if( value.length == 0 || (this.state.password == this.state.confirmpassword)  || passwordInvalid) {
+
+                if (value.length == 0 || (this.state.password == this.state.confirmpassword) || passwordInvalid) {
                     confirmpasswordInvalid = false;
                 } else {
                     confirmpasswordInvalid = true;
                 }
-                
+
                 break;
             default:
                 break;
         }
-        this.setState( {
+        this.setState({
+            ...this.state,
             usernameValid: usernameValid,
             passwordInvalid: passwordInvalid,
             confirmpasswordInvalid: confirmpasswordInvalid
@@ -137,9 +137,12 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
     }
 
     validateForm() {
-        this.setState({formValid: this.state.usernameValid 
-            && !this.state.passwordInvalid 
-            && !this.state.confirmpasswordInvalid});
+        this.setState({
+            ...this.state,
+            formValid: this.state.usernameValid
+                && !this.state.passwordInvalid
+                && !this.state.confirmpasswordInvalid
+        });
     }
 
     private handleSubmit = async (event: FormEvent) => {

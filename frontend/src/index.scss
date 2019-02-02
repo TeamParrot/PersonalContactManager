@@ -66,6 +66,13 @@ nav {
 /* Inputs */
 form {
   max-width: 400px;
+  
+  .form-error {
+    color: #a94442;
+    font-size: .9em;
+    margin-top: -0.5em;
+    margin-bottom: 1em;
+  }
 }
 
 input, button {
@@ -129,6 +136,13 @@ button, .button {
 
   &:active {
     filter: brightness(80%);
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    filter: brightness(80%) !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1), inset 0 0 5px rgba(0, 0, 0, .1);
   }
 }
 
