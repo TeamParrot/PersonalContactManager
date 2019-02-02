@@ -47,7 +47,7 @@ export class ContactItem extends Component<ContactItemProps, ContactItemState> {
             </div>
             <ContactDialog showModal={this.state.showContactDialog}
                            mode={ContactDialogMode.Edit}
-                           contact={this.state.contact}
+                           contact={{...this.state.contact}}
                            onCancel={this.contactDialogCancel}
                            onSubmit={this.contactDialogSubmit}/>
         </div>
