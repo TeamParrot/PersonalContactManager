@@ -8,6 +8,7 @@ import {ContactDialog, ContactDialogMode} from "../components/ContactDialog";
 
 type HomeProps = {
     user: User;
+    onUnauthorized: (user: User) => void,
 };
 
 type HomeState = {
@@ -32,11 +33,19 @@ export class HomePage extends Component<HomeProps, HomeState> {
     async componentDidMount(): Promise<void> {
         if (this.state.user) {
             // Load contacts from the API once the component is loaded if the user is logged in.
-            const contacts = await this.api.getContacts();
-            this.setState({
-                ...this.state,
-                contacts: contacts,
-            });
+            try {
+                const contacts = await this.api.getContacts();
+                this.setState({
+                    ...this.state,
+                    contacts: contacts,
+                });
+            } catch (e) {
+                // If we cannot get the contacts (e.g. 401 Unauthorized, the user is no longer logged in)
+                this.setState({
+                    user: null,
+                });
+                this.props.onUnauthorized(null);
+            }
         }
     }
 

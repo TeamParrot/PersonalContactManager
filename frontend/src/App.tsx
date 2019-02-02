@@ -27,7 +27,7 @@ class App extends Component<AppProps, AppState> {
     componentWillMount(): void {
         // Check if we are logged in.
         const token = this.getCookieValue("token");
-        if (token) {
+        if (token && token.length > 0) {
             const user = new User("Demo User");
             user.sessionToken = token;
             
@@ -71,7 +71,7 @@ class App extends Component<AppProps, AppState> {
                         </ul>
                     </nav>
 
-                    <Route path="/" exact component={() => <HomePage user={this.state.user}/>}/>
+                    <Route path="/" exact component={() => <HomePage user={this.state.user} onUnauthorized={this.userChanged}/>}/>
                     <Route path="/login/" component={() => <LoginPage onLogin={this.userChanged}/>}/>
                     <Route path="/register/" component={() => <RegisterPage onRegister={this.userChanged}/>}/>
                 </div>
@@ -83,6 +83,10 @@ class App extends Component<AppProps, AppState> {
         this.setState({
             user: user
         });
+        
+        if (!user) {
+            document.cookie = "token=;"; // Remove cookie if we are no longer logged in.
+        }
     };
 
     private logout = async () => {
