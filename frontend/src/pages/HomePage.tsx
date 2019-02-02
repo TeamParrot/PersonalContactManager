@@ -49,13 +49,11 @@ export class HomePage extends Component<HomeProps, HomeState> {
                         !this.state.contacts &&
                         <div>
                           <p>Loading contacts...</p>
-                          <p>Welcome {this.props.user}</p>
                         </div>
                     }
                     {
                         this.state.contacts &&
                         <div>
-                          <p>Welcome {this.props.user}</p>
                           <h2>My Contacts ({this.state.contacts.length})</h2>
                           <div className="control-row">
                             <button onClick={this.showAddDialog}>Add New</button>

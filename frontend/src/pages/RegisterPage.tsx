@@ -37,8 +37,8 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
             confirmpassword: "",
             //formErrors: {username: '', password: '', confirmpassword: ''},
             usernameValid: false,
-            passwordInvalid: true,
-            confirmpasswordInvalid: true,
+            passwordInvalid: false,
+            confirmpasswordInvalid: false,
             formValid: false
 
         };
