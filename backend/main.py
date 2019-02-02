@@ -2,7 +2,7 @@ import json
 import logging
 
 from bottle import (delete, error, get, install, post, put, redirect, request,
-                    response, run, static_file)
+                    response, route, run, static_file)
 
 from config import Config
 from contact import Contact, MalformedContactError
@@ -24,7 +24,7 @@ class EnableCors(object):
         def _enable_cors(*args, **kwargs):
             # set CORS headers
             response.headers['Access-Control-Allow-Origin'] = '*'
-            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+            response.headers['Access-Control-Allow-Methods'] = 'DELETE, GET, POST, PUT, OPTIONS'
             response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
             response.headers['Access-Control-Allow-Credentials'] = 'true'
 
@@ -68,7 +68,7 @@ def serve_static(path):
     return result
 
 
-@post('/api/login')
+@route('/api/login', method=['OPTIONS', 'POST'])
 def login():
     try:
         username, password = extract_credentials()
@@ -82,7 +82,7 @@ def login():
         return json_error('Invalid credentials.')
 
 
-@post('/api/logout')
+@route('/api/logout', method=['OPTIONS', 'POST'])
 def logout():
     try:
         token = request.get_cookie('token')
@@ -102,7 +102,7 @@ def logout():
         return json_error('Invalid credentials.')
 
 
-@post('/api/register')
+@route('/api/register', method=['OPTIONS', 'POST'])
 def register():
     try:
         username, password = extract_credentials()
@@ -116,7 +116,7 @@ def register():
         return json_error('Username taken.')
 
 
-@get('/api/contacts')
+@route('/api/contacts', method=['GET', 'OPTIONS'])
 def get_contacts():
     try:
         token = request.get_cookie('token')
@@ -138,7 +138,7 @@ def get_contacts():
         return json_error('Invalid credentials.')
 
 
-@post('/api/contacts')
+@route('/api/contacts', method=['OPTIONS', 'POST'])
 def create_contact():
     try:
         token = request.get_cookie('token')
@@ -161,7 +161,7 @@ def create_contact():
         return json_error('Invalid credentials.')
 
 
-@delete('/api/contacts/<contact_id>')
+@route('/api/contacts/<contact_id>', method=['DELETE', 'OPTIONS'])
 def delete_contact(contact_id):
     try:
         token = request.get_cookie('token')
@@ -182,7 +182,7 @@ def delete_contact(contact_id):
         return json_error('Invalid credentials.')
 
 
-@put('/api/contacts/<contact_id>')
+@route('/api/contacts/<contact_id>', method=['OPTIONS', 'PUT'])
 def update_contact(contact_id):
     try:
         token = request.get_cookie('token')
