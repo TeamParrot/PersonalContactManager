@@ -17,7 +17,7 @@ type AppState = {
 
 class App extends Component<AppProps, AppState> {
     private api: IApiService = App.getApiInstance();
-    
+
     constructor(props: AppProps) {
         super(props);
 
@@ -30,7 +30,7 @@ class App extends Component<AppProps, AppState> {
         if (token && token.length > 0) {
             const user = new User("Demo User");
             user.sessionToken = token;
-            
+
             this.setState({
                 user: user,
             });
@@ -43,35 +43,38 @@ class App extends Component<AppProps, AppState> {
         return (
             <Router>
                 <div className="app" id="app">
-                    <h1>Contact Manager App</h1>
+                    <header>
+                        <h1>Contact Manager App</h1>
 
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to="/" className="button">Home</Link>
-                            </li>
-                            {
-                                !this.state.user &&
+                        <nav>
+                            <ul>
                                 <li>
-                                  <Link to="/login/" className="button">Login</Link>
+                                    <Link to="/" className="button">Home</Link>
                                 </li>
-                            }
-                            {
-                                !this.state.user &&
-                                <li>
-                                  <Link to="/register/" className="button">Register</Link>
-                                </li>
-                            }
-                            {
-                                this.state.user &&
-                                <li>
-                                  <a className="button" onClick={this.logout}>Logout</a>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
+                                {
+                                    !this.state.user &&
+                                    <li>
+                                      <Link to="/login/" className="button">Login</Link>
+                                    </li>
+                                }
+                                {
+                                    !this.state.user &&
+                                    <li>
+                                      <Link to="/register/" className="button">Register</Link>
+                                    </li>
+                                }
+                                {
+                                    this.state.user &&
+                                    <li>
+                                      <a className="button" onClick={this.logout}>Logout</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </header>
 
-                    <Route path="/" exact component={() => <HomePage user={this.state.user} onUnauthorized={this.userChanged}/>}/>
+                    <Route path="/" exact
+                           component={() => <HomePage user={this.state.user} onUnauthorized={this.userChanged}/>}/>
                     <Route path="/login/" component={() => <LoginPage onLogin={this.userChanged}/>}/>
                     <Route path="/register/" component={() => <RegisterPage onRegister={this.userChanged}/>}/>
                 </div>
@@ -83,7 +86,7 @@ class App extends Component<AppProps, AppState> {
         this.setState({
             user: user
         });
-        
+
         if (!user) {
             document.cookie = "token=;"; // Remove cookie if we are no longer logged in.
         }

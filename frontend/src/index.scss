@@ -3,15 +3,18 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
 
 $font: 'Open Sans', sans-serif;
+
 html {
   height: 100%;
 }
+
 body {
   background-image: url('assets/background.png');
   background-size: 100% 200%;
   height: 100%;
   font-family: $font;
   font-size: 16px;
+  text-align: center;
 }
 
 /* Use border-box sizing for everything */
@@ -49,6 +52,7 @@ nav {
   
   ul {
     display: flex;
+    justify-content: center;
     
     li {
       margin: 0 0.5rem;
@@ -71,6 +75,7 @@ nav {
 /* Inputs */
 form {
   max-width: 400px;
+  margin: 0 auto;
   
   .form-error {
     color: #a94442;
