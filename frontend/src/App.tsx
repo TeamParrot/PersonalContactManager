@@ -54,7 +54,7 @@ class App extends Component<AppProps, AppState> {
                                 {
                                     !this.state.user &&
                                     <li>
-                                      <Link to="/login/" className="button">Login</Link>
+                                      <Link to="/login/" className="button">Log In</Link>
                                     </li>
                                 }
                                 {
@@ -66,7 +66,7 @@ class App extends Component<AppProps, AppState> {
                                 {
                                     this.state.user &&
                                     <li>
-                                      <a className="button" onClick={this.logout}>Logout</a>
+                                      <a className="button" onClick={this.logout}>Log Out</a>
                                     </li>
                                 }
                             </ul>

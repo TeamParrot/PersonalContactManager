@@ -34,7 +34,7 @@ export class LoginPage extends Component<LoginProps, LoginState> {
                 {this.state.user &&
                 <Redirect push to="/"/>
                 }
-                <h1>Login Page</h1>
+                <h1>Log In</h1>
                 <form onSubmit={this.handleSubmit}>
                     {this.state.error &&
                     <div className="alert alert--error">
@@ -45,7 +45,7 @@ export class LoginPage extends Component<LoginProps, LoginState> {
                            onChange={this.handleChange} required/>
                     <input type="password" placeholder="Password" name="password" value={this.state.password}
                            onChange={this.handleChange} required/>
-                    <button type="submit">Login</button>
+                    <button type="submit">Log In</button>
                 </form>
             </div>
         )

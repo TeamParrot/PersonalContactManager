@@ -51,7 +51,7 @@ export class RegisterPage extends Component<RegisterProps, RegisterState> {
                 {this.state.user &&
                 <Redirect push to="/"/>
                 }
-                <h1>Register Page</h1>
+                <h1>Register</h1>
                 <form onSubmit={this.handleSubmit}>
                     {this.state.error &&
                     <div className="alert alert--error">
